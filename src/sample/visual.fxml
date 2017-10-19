@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.Double?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Polygon?>
+<?import javafx.scene.shape.Rectangle?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+   <children>
+       <AnchorPane fx:id="anchorPaneVisual" layoutX="238.0" layoutY="85.0" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <VBox layoutX="54.0" layoutY="110.0" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: silver;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefWidth="150.0" VBox.vgrow="ALWAYS">
+               <children>
+                  <Polygon fx:id="triangle" fill="DODGERBLUE" layoutX="75.0" layoutY="313.0" stroke="BLACK" strokeType="INSIDE">
+                    <points>
+                      <Double fx:value="-50.0" />
+                      <Double fx:value="40.0" />
+                      <Double fx:value="50.0" />
+                      <Double fx:value="40.0" />
+                      <Double fx:value="0.0" />
+                      <Double fx:value="-60.0" />
+                    </points>
+                  </Polygon>
+                  <Rectangle fx:id="square" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="60.0" layoutX="45.0" layoutY="156.0" stroke="BLACK" strokeType="INSIDE" width="60.0" />
+                  <Circle fx:id="circle" fill="DODGERBLUE" layoutX="70.0" layoutY="76.0" radius="30.0" stroke="BLACK" strokeType="INSIDE" />
+                  <Label fx:id="label" layoutX="23.0" layoutY="369.0" text="Label" />
+                  <RadioButton fx:id="radioBtn" layoutX="20.0" layoutY="14.0" mnemonicParsing="false" text="RadioButton" />
+               </children>
+            </AnchorPane>
+         </children>
+      </VBox>
+
+   </children>
+</AnchorPane>

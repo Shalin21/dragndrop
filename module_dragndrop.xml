@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_dragndrop" default="compile.module.dragndrop">
+  <dirname property="module.dragndrop.basedir" file="${ant.file.module_dragndrop}"/>
+  
+  <property name="module.jdk.home.dragndrop" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.dragndrop" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.dragndrop" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.dragndrop" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="dragndrop.output.dir" value="${module.dragndrop.basedir}/out/production/dragndrop"/>
+  <property name="dragndrop.testoutput.dir" value="${module.dragndrop.basedir}/out/test/dragndrop"/>
+  
+  <path id="dragndrop.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="dragndrop.module.production.classpath">
+    <path refid="${module.jdk.classpath.dragndrop}"/>
+  </path>
+  
+  <path id="dragndrop.runtime.production.module.classpath">
+    <pathelement location="${dragndrop.output.dir}"/>
+  </path>
+  
+  <path id="dragndrop.module.classpath">
+    <path refid="${module.jdk.classpath.dragndrop}"/>
+    <pathelement location="${dragndrop.output.dir}"/>
+  </path>
+  
+  <path id="dragndrop.runtime.module.classpath">
+    <pathelement location="${dragndrop.testoutput.dir}"/>
+    <pathelement location="${dragndrop.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.dragndrop">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.dragndrop">
+    <patternset refid="excluded.from.module.dragndrop"/>
+  </patternset>
+  
+  <path id="dragndrop.module.sourcepath">
+    <dirset dir="${module.dragndrop.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.dragndrop" depends="compile.module.dragndrop.production,compile.module.dragndrop.tests" description="Compile module dragndrop"/>
+  
+  <target name="compile.module.dragndrop.production" depends="register.custom.compilers" description="Compile module dragndrop; production classes">
+    <mkdir dir="${dragndrop.output.dir}"/>
+    <javac2 destdir="${dragndrop.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.dragndrop}/javac">
+      <compilerarg line="${compiler.args.dragndrop}"/>
+      <bootclasspath refid="dragndrop.module.bootclasspath"/>
+      <classpath refid="dragndrop.module.production.classpath"/>
+      <src refid="dragndrop.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.dragndrop"/>
+    </javac2>
+    
+    <copy todir="${dragndrop.output.dir}">
+      <fileset dir="${module.dragndrop.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.dragndrop.tests" depends="register.custom.compilers,compile.module.dragndrop.production" description="compile module dragndrop; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.dragndrop" description="cleanup module">
+    <delete dir="${dragndrop.output.dir}"/>
+    <delete dir="${dragndrop.testoutput.dir}"/>
+  </target>
+</project>
