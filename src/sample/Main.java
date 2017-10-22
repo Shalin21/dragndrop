@@ -16,7 +16,7 @@ public  static HostServices hostServices;
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("visual.fxml"));
         primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(root, 700, 400));
+        primaryStage.setScene(new Scene(root, 1600, 900));
         primaryStage.show();
 
         }

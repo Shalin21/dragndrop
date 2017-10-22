@@ -24,31 +24,34 @@ public class MyCircle extends Circle {
     Anchor bot = new Anchor();
     Anchor left = new Anchor();
     Anchor right = new Anchor();
-    Label text = new Label();
 
+    Label text = new Label();
+    int type;
     public MyCircle(double centerX, double centerY, double radius, int type) {
         super(centerX, centerY, radius);
+        super.setFill(Color.GREY);
+        super.setStroke(Color.BLACK);
+        super.setStrokeWidth(2);
+        this.type=type;
         top = new Anchor(centerX, centerY-radius, 4, 3);
         bot = new Anchor(centerX, centerY+radius, 4, 1);
         left = new Anchor(centerX-radius, centerY, 4,4);
         right = new Anchor(centerX+radius, centerY, 4, 2);
+        top.setParent(this);
+        bot.setParent(this);
+        left.setParent(this);
+        right.setParent(this);
         top.setVisible(false);
         bot.setVisible(false);
         left.setVisible(false);
         right.setVisible(false);
-        DoubleProperty doubleXProperty = new SimpleDoubleProperty();
-        DoubleProperty doubleYProperty = new SimpleDoubleProperty();
-        doubleXProperty.bind(super.centerXProperty().subtract(13));
-        doubleYProperty.bind(super.centerYProperty().subtract(10));
-        text.layoutXProperty().bindBidirectional(doubleXProperty);
-        text.layoutYProperty().bindBidirectional(doubleYProperty);
+        text.setLayoutX(super.getCenterX()-14);
+        text.setLayoutY(super.getCenterY()-10);
+
         text.setFont(Font.font(null, FontWeight.BLACK.BOLD, 14));
-        switch (type){
-            case 1:{}
-            case 2:{}
-            case 3:{}
-        }
+
         Dragable();
+        textDrag();
     }
 
 
@@ -79,7 +82,37 @@ public void changeVisible(){
 
 }
 
-
+private void textDrag(){
+    switch (type){
+        case 1:{
+            text.setText("XOR");
+            DoubleProperty doubleXProperty = new SimpleDoubleProperty();
+            DoubleProperty doubleYProperty = new SimpleDoubleProperty();
+            doubleXProperty.bind(super.centerXProperty().subtract(14));
+            doubleYProperty.bind(super.centerYProperty().subtract(10));
+            text.layoutXProperty().bindBidirectional(doubleXProperty);
+             text.layoutYProperty().bindBidirectional(doubleYProperty);
+            //doubleXProperty.bind(super.centerXProperty().subtract(14));
+            break;
+        }
+        case 2:{text.setText("AND");
+            DoubleProperty doubleXProperty = new SimpleDoubleProperty();
+            DoubleProperty doubleYProperty = new SimpleDoubleProperty();
+            doubleXProperty.bind(super.centerXProperty().subtract(14));
+            doubleYProperty.bind(super.centerYProperty().subtract(10));
+            text.layoutXProperty().bindBidirectional(doubleXProperty);
+            text.layoutYProperty().bindBidirectional(doubleYProperty);
+            break;}
+        case 3:{text.setText("OR");
+            DoubleProperty doubleXProperty = new SimpleDoubleProperty();
+            DoubleProperty doubleYProperty = new SimpleDoubleProperty();
+            doubleXProperty.bind(super.centerXProperty().subtract(14));
+            doubleYProperty.bind(super.centerYProperty().subtract(10));
+            text.layoutXProperty().bindBidirectional(doubleXProperty);
+            text.layoutYProperty().bindBidirectional(doubleYProperty);
+            break;}
+    }
+}
 
 
 public List<Anchor> getConnectionPoints(){

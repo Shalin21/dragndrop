@@ -1,5 +1,6 @@
 package sample;
 
+import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
@@ -8,6 +9,7 @@ import javafx.scene.shape.Circle;
  */
 public class Anchor extends Circle {
     int type;
+    Node parent ;
 
     public Anchor(double centerX, double centerY, double radius, int type) {
         super(centerX, centerY, radius);
@@ -16,5 +18,9 @@ public class Anchor extends Circle {
     }
 
     public Anchor() {
+    }
+
+    public void setParent(Node parent){
+        this.parent=parent;
     }
 }
