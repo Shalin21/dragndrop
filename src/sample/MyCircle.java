@@ -13,13 +13,14 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by admin on 11.10.17.
  */
-public class MyCircle extends Circle {
+public class MyCircle extends Circle implements Serializable{
     Anchor top = new Anchor();
     Anchor bot = new Anchor();
     Anchor left = new Anchor();
@@ -27,6 +28,7 @@ public class MyCircle extends Circle {
 
     Label text = new Label();
     int type;
+    double x,y,size;
     public MyCircle(double centerX, double centerY, double radius, int type) {
         super(centerX, centerY, radius);
         super.setFill(Color.GREY);
@@ -47,7 +49,9 @@ public class MyCircle extends Circle {
         right.setVisible(false);
         text.setLayoutX(super.getCenterX()-14);
         text.setLayoutY(super.getCenterY()-10);
-
+        this.x = x;
+        this.y = y;
+        this.size = radius;
         text.setFont(Font.font(null, FontWeight.BLACK.BOLD, 14));
 
         Dragable();

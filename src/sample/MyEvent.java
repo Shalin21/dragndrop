@@ -4,6 +4,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Point2D;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
@@ -13,10 +14,12 @@ import javafx.scene.shape.Rectangle;
  */
 public class MyEvent extends Polygon {
     Rectangle process = new Rectangle();
-
+    double x,y,size;
+    int type;
     public MyEvent(double x, double y, double size, int type) {
-
-        makeDrag();
+    this.size = size;
+    this.type = type;
+       // makeDrag();
     }
 
     public void switchByType(double x, double y, double size, int type) {
@@ -52,8 +55,10 @@ public class MyEvent extends Polygon {
         process.setFill(new Color(0.55, 0.98, 0.49, 1));
         process.setStroke(Color.BLACK);
         process.setStrokeWidth(1);
-        AnchorPane parent = (AnchorPane) super.getParent();
+        Pane parent = (Pane) super.getParent();
         parent.getChildren().addAll(process);
+        this.x=super.getLayoutX();
+        this.y=y;
     }
 
     private void typeTwo(double x, double y, double size) {
@@ -67,6 +72,9 @@ public class MyEvent extends Polygon {
         super.setFill(new Color(0.6, 0.89, 0.98, 1.0));
         super.setStroke(Color.BLACK);
         super.setStrokeWidth(1);
+        super.setLayoutX(x-35);
+        this.x=super.getLayoutX();
+        this.y=y;
     }
 
     private void typeOne(double x, double y, double size) {
@@ -80,24 +88,29 @@ public class MyEvent extends Polygon {
         super.setFill(new Color(0.52, 0.67, 0.98, 1.0));
         super.setStroke(Color.BLACK);
         super.setStrokeWidth(1);
+        super.setLayoutX(x-45);
+        this.x=super.getLayoutX();
+        this.y=y;
     }
 
 
     private final ObjectProperty<Point2D> mousePosition = new SimpleObjectProperty<>();
-    private void makeDrag(){
-        super.setOnMousePressed(event -> {
-            mousePosition.set(new Point2D(event.getSceneX(), event.getSceneY()));
-        });
-        super.setOnMouseDragged(event -> {
-            double deltaX = event.getSceneX() - mousePosition.get().getX();
-            double deltaY = event.getSceneY() - mousePosition.get().getY();
-            super.setLayoutX(super.getLayoutX() + deltaX);
-            super.setLayoutY(super.getLayoutY() + deltaY);
-            mousePosition.set(new Point2D(event.getSceneX(), event.getSceneY()));
+    public void makeDrag(){
+        if(type !=3) {
+            super.setOnMousePressed(event -> {
+                mousePosition.set(new Point2D(event.getSceneX(), event.getSceneY()));
+            });
+            super.setOnMouseDragged(event -> {
+                double deltaX = event.getSceneX() - mousePosition.get().getX();
+                double deltaY = event.getSceneY() - mousePosition.get().getY();
+                super.setLayoutX(super.getLayoutX() + deltaX);
+                super.setLayoutY(super.getLayoutY() + deltaY);
+                mousePosition.set(new Point2D(event.getSceneX(), event.getSceneY()));
 
-            process.setLayoutX(super.getLayoutX()+process.getHeight()*3.3);
-            process.setLayoutY(super.getLayoutY()+process.getHeight()*3.8);
-        });
+                process.setLayoutX(super.getLayoutX() - process.getWidth());
+                process.setLayoutY(super.getLayoutY() + process.getHeight() * 12.8);
+            });
+        }
         process.setOnMousePressed(event -> {
             mousePosition.set(new Point2D(event.getSceneX(), event.getSceneY()));
         });
@@ -108,8 +121,8 @@ public class MyEvent extends Polygon {
             process.setLayoutY(process.getLayoutY() + deltaY);
             mousePosition.set(new Point2D(event.getSceneX(), event.getSceneY()));
 
-            super.setLayoutX(process.getLayoutX()-process.getHeight()*3.3);
-            super.setLayoutY(process.getLayoutY()-process.getHeight()*3.8);
+            super.setLayoutX(process.getLayoutX());// - process.getWidth() * 0.15);
+            super.setLayoutY(process.getLayoutY());// + process.getHeight() *0.07);
         });
     }
 

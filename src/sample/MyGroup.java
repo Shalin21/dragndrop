@@ -17,6 +17,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +25,7 @@ import java.util.Optional;
 /**
  * Created by admin on 17.10.17.
  */
-public class MyGroup extends Rectangle {
+public class MyGroup extends Rectangle implements Serializable{
     Label text = new Label();
     //Rectangle rectangle = new Rectangle();
     double size;
@@ -37,6 +38,7 @@ public class MyGroup extends Rectangle {
     Line line3 = new Line();
     Line line4 = new Line();
     int type;
+    double x,y;
 
     public MyGroup( double x, double y, double size, int type) {
         this.type=type;
@@ -50,7 +52,8 @@ public class MyGroup extends Rectangle {
        bot = new Anchor(x+size, y+size, 4, 3);
         left = new Anchor(x, y+size/2, 4,4);
         right = new Anchor(x+size*2, y+size/2, 4, 2);
-
+        this.x=x;
+        this.y=y;
         top.setParent(this);
         bot.setParent(this);
         left.setParent(this);
