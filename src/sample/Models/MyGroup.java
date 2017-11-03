@@ -88,6 +88,18 @@ public class MyGroup extends Rectangle implements Serializable{
         right.centerXProperty().bind(super.layoutXProperty().add(size*2));
         right.centerYProperty().bind(super.layoutYProperty().add(size/2));
 
+
+        this.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2){
+                Pane pane = (Pane)this.getParent();
+                if(this.type==4) {
+                    pane.getChildren().removeAll(this, this.text);
+                }
+                else if(this.type==3){pane.getChildren().removeAll(this, this.text, this.right, this.left, this.top, this.bot);}
+                else if(this.type==2){pane.getChildren().removeAll(this, this.line1, this.text, this.right, this.left, this.top, this.bot);}
+                else if(this.type==1){pane.getChildren().removeAll(this, this.text, this.line1, this.line2, this.line3, this.line4, this.right, this.left, this.top, this.bot);}
+            }
+        });
     }
     public void byType(int type){
 

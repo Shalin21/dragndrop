@@ -4,6 +4,7 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
@@ -28,19 +29,6 @@ public class MyCircle extends Circle implements Serializable{
     public Label text = new Label();
     public int type;
     public double x,y,size;
-    SimpleIntegerProperty asd = new SimpleIntegerProperty();
-    @XmlElement(name = "asd")
-    public int getAsd() {
-        return asd.get();
-    }
-
-    public SimpleIntegerProperty asdProperty() {
-        return asd;
-    }
-
-    public void setAsd(int asd) {
-        this.asd.set(asd);
-    }
     public MyCircle(double centerX, double centerY, double radius, int type) {
         super(centerX, centerY, radius);
         super.setFill(Color.GREY);
@@ -69,6 +57,14 @@ public class MyCircle extends Circle implements Serializable{
 
         Dragable();
         textDrag();
+        this.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2){
+                Pane pane = (Pane)this.getParent();
+
+                pane.getChildren().removeAll(this, this.text, this.right, this.left, this.top, this.bot);
+
+            }
+        });
     }
 
 

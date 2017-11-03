@@ -56,6 +56,17 @@ public class MyEvent extends Polygon {
 //        top = new Anchor(x+size, y, 4, 2);
 //        bot = new Anchor(x+size, y+size, 4, 2);
        // makeDrag();
+        this.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2){
+                Pane pane = (Pane)this.getParent();
+                if(this.type==1) {
+                    pane.getChildren().removeAll(this, this.text1);
+                }
+                else if(this.type==2){pane.getChildren().removeAll(this, this.text1, this.right, this.left, this.top, this.bot);}
+                else if(this.type==3){pane.getChildren().removeAll(this,  this.text1, this.right, this.left, this.top, this.bot, this.process);}
+
+            }
+        });
     }
 
     public void switchByType(int type) {
@@ -118,18 +129,19 @@ public class MyEvent extends Polygon {
         super.setStroke(Color.BLACK);
         super.setStrokeWidth(1);
 
-        right.setParent(this);
-        left.setParent(this);
-        top.setParent(this);
-        bot.setParent(this);
+
         right = new Anchor(x+size*1.5, y+size/2, 6, 2);
-        left = new Anchor(x-size/2, y+size/2, 6, 2);
-        top = new Anchor(x+size/2, y, 6, 2);
-        bot = new Anchor(x+size/2, y+size, 6, 2);
+        left = new Anchor(x-size/2, y+size/2, 6, 4);
+        top = new Anchor(x+size/2, y, 6, 1);
+        bot = new Anchor(x+size/2, y+size, 6, 3);
         right.setVisible(false);
         left.setVisible(false);
         top.setVisible(false);
         bot.setVisible(false);
+        right.setParent(this);
+        left.setParent(this);
+        top.setParent(this);
+        bot.setParent(this);
         right.centerXProperty().bind(super.layoutXProperty().add(size*2.8-3));
         right.centerYProperty().bind(super.layoutYProperty().add(size+60));
         left.centerXProperty().bind(super.layoutXProperty().add(size*0.8-3));
@@ -141,7 +153,7 @@ public class MyEvent extends Polygon {
         //text1.layoutXProperty().bind(super.layoutXProperty());
         //text1.layoutYProperty().bind(super.layoutYProperty());
         Pane parent = (Pane) super.getParent();
-        parent.getChildren().addAll(text1);
+        parent.getChildren().addAll(text1, top, bot, left, right);
 
     }
 

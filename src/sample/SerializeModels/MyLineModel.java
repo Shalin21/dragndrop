@@ -8,10 +8,10 @@ import java.io.Serializable;
  */
 public class MyLineModel implements Serializable {
 
-    public  String startId = new String();
-    public  String endId = new String();
-    public  int startType;
-    public int endType;
+    private   String startId = new String();
+    private   String endId = new String();
+    private   int startType;
+    private int endType;
 
     public MyLineModel(){}
 

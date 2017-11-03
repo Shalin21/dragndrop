@@ -2,6 +2,7 @@ package sample.Models;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.CubicCurve;
@@ -18,9 +19,16 @@ public class MyLine extends CubicCurve {
     public int endType;
 
     public MyLine(Anchor start, Anchor temp, int rb) {
-        //startId = start.parent.getId();
-        //endId = temp.parent.getId();
+        this.setOnMouseClicked(event -> {
+            if(event.getClickCount()==2 )
+            {Pane pane = (Pane)this.getParent();
+                pane.getChildren().remove(event.getSource());
+            }
+        });
+        startId = start.getPatentId();
+        endId = temp.getPatentId();
         startType = start.type;
+        endType = temp.type;
         endType = temp.type;
   Pane anchorPaneVisual = (Pane)super.getParent();
         if (start.type == 2 && temp.type == 4) {
@@ -65,7 +73,7 @@ public class MyLine extends CubicCurve {
             if (rb == 2) {
                 super1.setStyle("-fx-stroke-dash-array: 2;");
             }
-            super1.setStrokeWidth(1);
+            super1.setStrokeWidth(1.5);
             super1.setFill(null);
 
             if (rb == 3) {
@@ -114,7 +122,7 @@ public class MyLine extends CubicCurve {
             if (rb == 2) {
                 super.setStyle("-fx-stroke-dash-array: 2;");
             }
-            super.setStrokeWidth(1);
+            super.setStrokeWidth(1.5);
             super.setFill(null);
 
             if (rb == 3) {
@@ -157,7 +165,7 @@ public class MyLine extends CubicCurve {
             if (rb == 2) {
                 super.setStyle("-fx-stroke-dash-array: 2;");
             }
-            super.setStrokeWidth(1);
+            super.setStrokeWidth(1.5);
             super.setFill(null);
 
             DoubleProperty xp = new SimpleDoubleProperty();
@@ -228,7 +236,7 @@ public class MyLine extends CubicCurve {
             if (rb == 2) {
                 super.setStyle("-fx-stroke-dash-array: 2;");
             }
-            super.setStrokeWidth(1);
+            super.setStrokeWidth(1.5);
             super.setFill(null);
 
 
@@ -275,7 +283,7 @@ public class MyLine extends CubicCurve {
             if (rb == 2) {
                 super.setStyle("-fx-stroke-dash-array: 2;");
             }
-            super.setStrokeWidth(1);
+            super.setStrokeWidth(1.5);
             super.setFill(null);
             DoubleProperty xp = new SimpleDoubleProperty();
             DoubleProperty yp = new SimpleDoubleProperty();
@@ -326,7 +334,7 @@ public class MyLine extends CubicCurve {
             if (rb == 2) {
                 super.setStyle("-fx-stroke-dash-array: 2;");
             }
-            super.setStrokeWidth(1);
+            super.setStrokeWidth(1.5);
             super.setFill(null);
 
             if (rb == 3) {
@@ -371,7 +379,7 @@ public class MyLine extends CubicCurve {
             if (rb == 2) {
                 super.setStyle("-fx-stroke-dash-array: 1;");
             }
-            super.setStrokeWidth(1);
+            super.setStrokeWidth(1.5);
             super.setFill(null);
 
             if (rb == 3) {
@@ -415,7 +423,7 @@ public class MyLine extends CubicCurve {
             if (rb == 2) {
                 super.setStyle("-fx-stroke-dash-array: 2;");
             }
-            super.setStrokeWidth(1);
+            super.setStrokeWidth(1.5);
             super.setFill(null);
 
             DoubleProperty xp = new SimpleDoubleProperty();
@@ -470,7 +478,7 @@ public class MyLine extends CubicCurve {
             if (rb == 2) {
                 super.setStyle("-fx-stroke-dash-array: 2;");
             }
-            super.setStrokeWidth(1);
+            super.setStrokeWidth(1.5);
             super.setFill(null);
 
             if (rb == 3) {
@@ -519,7 +527,7 @@ public class MyLine extends CubicCurve {
             if (rb == 2) {
                 super.setStyle("-fx-stroke-dash-array: 2;");
             }
-            super.setStrokeWidth(1);
+            super.setStrokeWidth(1.5);
             super.setFill(null);
 
             if (rb == 3) {
@@ -562,7 +570,7 @@ public class MyLine extends CubicCurve {
             if (rb == 2) {
                 super.setStyle("-fx-stroke-dash-array: 2;");
             }
-            super.setStrokeWidth(1);
+            super.setStrokeWidth(1.5);
             super.setFill(null);
 
             DoubleProperty xp = new SimpleDoubleProperty();
@@ -633,7 +641,7 @@ public class MyLine extends CubicCurve {
             if (rb == 2) {
                 super.setStyle("-fx-stroke-dash-array: 2;");
             }
-            super.setStrokeWidth(1);
+            super.setStrokeWidth(1.5);
             super.setFill(null);
 
 
@@ -680,7 +688,7 @@ public class MyLine extends CubicCurve {
             if (rb == 2) {
                 super.setStyle("-fx-stroke-dash-array: 2;");
             }
-            super.setStrokeWidth(1);
+            super.setStrokeWidth(1.5);
             super.setFill(null);
             DoubleProperty xp = new SimpleDoubleProperty();
             DoubleProperty yp = new SimpleDoubleProperty();
@@ -731,7 +739,7 @@ public class MyLine extends CubicCurve {
             if (rb == 2) {
                 super.setStyle("-fx-stroke-dash-array: 2;");
             }
-            super.setStrokeWidth(1);
+            super.setStrokeWidth(1.5);
             super.setFill(null);
 
             if (rb == 3) {
@@ -776,7 +784,7 @@ public class MyLine extends CubicCurve {
             if (rb == 2) {
                 super.setStyle("-fx-stroke-dash-array: 1;");
             }
-            super.setStrokeWidth(1);
+            super.setStrokeWidth(1.5);
             super.setFill(null);
 
             if (rb == 3) {
@@ -820,7 +828,7 @@ public class MyLine extends CubicCurve {
             if (rb == 2) {
                 super.setStyle("-fx-stroke-dash-array: 2;");
             }
-            super.setStrokeWidth(1);
+            super.setStrokeWidth(1.5);
             super.setFill(null);
 
             DoubleProperty xp = new SimpleDoubleProperty();
@@ -835,7 +843,38 @@ public class MyLine extends CubicCurve {
 
            // anchorPaneVisual.getChildren().add(super);
         }
+
     }
 
+    public String getStartId() {
+        return startId;
+    }
 
+    public void setStartId(String startId) {
+        this.startId = startId;
+    }
+
+    public String getEndId() {
+        return endId;
+    }
+
+    public void setEndId(String endId) {
+        this.endId = endId;
+    }
+
+    public int getStartType() {
+        return startType;
+    }
+
+    public void setStartType(int startType) {
+        this.startType = startType;
+    }
+
+    public int getEndType() {
+        return endType;
+    }
+
+    public void setEndType(int endType) {
+        this.endType = endType;
+    }
 }

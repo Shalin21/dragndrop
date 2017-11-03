@@ -8,11 +8,11 @@ import java.io.Serializable;
  */
 public class MyCircleModel implements Serializable {
 
-    public double x,y,size;
-    public int type;
-    public String text = new String();
-    public  String figure = new String ();
-    public  String id = new String();
+    private double x,y,size;
+    private int type;
+    private String text = new String();
+    private   String figure = new String ();
+    private   String id = new String();
     public MyCircleModel(double x, double y, double size, int type, String text, String figure, String id) {
 
         this.x = x;

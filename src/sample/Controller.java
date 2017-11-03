@@ -17,6 +17,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 import javafx.scene.shape.CubicCurve;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import sample.Models.*;
@@ -71,7 +72,8 @@ public class Controller {
     MyCircle ts = new MyCircle(500, 500, 20, 1);
     MyLine line = null;
     public void initialize() {
-
+    label.setVisible(false);
+    radioBtn.setText("Enable draw");
         menuSave.setOnAction(event -> {
             MyCircleCollection collection = new MyCircleCollection();
             MyLineCollection collection1 = new MyLineCollection();
@@ -95,20 +97,29 @@ public class Controller {
                 }
                 else if(c instanceof MyLine){
                     MyLine ts = (MyLine)c;
-                    MyLineModel l = new MyLineModel(ts.startId, ts.endId, ts.startType, ts.endType);
+                    MyLineModel l = new MyLineModel(ts.getStartId(), ts.getEndId(), ts.getStartType(), ts.getEndType());
                     collection1.add(l);
                 }
             }
             try {
                 Stage stage = (Stage) anchorPaneVisual.getScene().getWindow();
-                FileChooser fileChooser = new FileChooser();
+                DirectoryChooser fileChooser = new DirectoryChooser();
                 fileChooser.setTitle("Open Resource File");
 
                 JAXBContext jc = JAXBContext.newInstance(MyCircleCollection.class);
-                File serializedFile = fileChooser.showOpenDialog(stage);
-                if (serializedFile.exists() == false)
+                String path = fileChooser.showDialog(stage).getPath();
+
+
+                File serializedFile = new File(path+File.separator+"object.xml");
+
+
+
+                File serializedFile1 = new File(path+File.separator+"line.xml");
+
+                if (serializedFile.exists() == false ) {
                     serializedFile.createNewFile();
 
+                }
 
                 Marshaller m = jc.createMarshaller();
                 m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
@@ -122,11 +133,10 @@ public class Controller {
 
                 m.marshal(jaxbElement, serializedFile);
 
-                FileChooser fileChooser1 = new FileChooser();
-                fileChooser1.setTitle("Open Resource File");
+
 
                 JAXBContext jc1 = JAXBContext.newInstance(MyLineCollection.class);
-                File serializedFile1 = fileChooser1.showOpenDialog(stage);
+
                 if (serializedFile1.exists() == false)
                     serializedFile1.createNewFile();
 
@@ -185,10 +195,18 @@ public class Controller {
             try{
 
                 Stage stage = (Stage) anchorPaneVisual.getScene().getWindow();
-                FileChooser fileChooser = new FileChooser();
+                DirectoryChooser fileChooser = new DirectoryChooser();
                 fileChooser.setTitle("Open Resource File");
                 JAXBContext jc = JAXBContext.newInstance(MyCircleCollection.class);
-                File serializedFile = fileChooser.showOpenDialog(stage);
+                String path = fileChooser.showDialog(stage).getPath();
+
+
+                File serializedFile = new File(path+File.separator+"object.xml");
+
+
+
+                File serializedFile1 = new File(path+File.separator+"line.xml");
+
                 //UNMARSHALLING
                 Unmarshaller unmarshaller = jc.createUnmarshaller();
 
@@ -198,7 +216,7 @@ public class Controller {
                 FileChooser fileChooser1 = new FileChooser();
                 fileChooser1.setTitle("Open Resource File");
                 JAXBContext jc1 = JAXBContext.newInstance(MyLineCollection.class);
-                File serializedFile1 = fileChooser1.showOpenDialog(stage);
+
                 //UNMARSHALLING
                 Unmarshaller unmarshaller1 = jc1.createUnmarshaller();
 
@@ -208,27 +226,27 @@ public class Controller {
                 MyCircle c = null;
                 for (MyCircleModel model:collection.getCollection()
                      ) {
-                    if(model.figure.contains("Circle")) {
+                    if(model.getFigure().contains("Circle")) {
                         //System.out.println("circle");
-                        c = new MyCircle(model.x, model.y, model.size, model.type);
+                        c = new MyCircle(model.getX(), model.getY(), model.getSize(), model.getType());
 
                         anchorPaneVisual.getChildren().addAll(c, c.text, c.right, c.left, c.top, c.bot);
                         c.setId(model.getId());
                         setDraggable1(c);
                     }
-                    else if(model.figure.contains("Group")){
-                        MyGroup group = new MyGroup(model.x, model.y, model.size, model.type, model.text);
+                    else if(model.getFigure().contains("Group")){
+                        MyGroup group = new MyGroup(model.getX(), model.getY(), model.getSize(), model.getType(), model.getText());
                         group.setId(model.getId());
                         anchorPaneVisual.getChildren().addAll(group, group.right, group.left, group.top, group.bot);
-                        group.byType(model.type);
-                        makeDrag(group);
+                        group.byType(model.getType());
+                        makeDrag2(group);
                     }
-                    else if(model.figure.contains("Event")){
-                        MyEvent group1 = new MyEvent(model.x, model.y, model.size, model.type, model.text);
+                    else if(model.getFigure().contains("Event")){
+                        MyEvent group1 = new MyEvent(model.getX(), model.getY(), model.getSize(), model.getType(), model.getText());
                         group1.setId(model.getId());
                         anchorPaneVisual.getChildren().add(group1);
                         group1.switchByType(group1.type);
-                        makeDrag(group1);
+                        group1.makeDrag();
                     }
 
                 }
@@ -240,13 +258,13 @@ public class Controller {
                         if(n instanceof Anchor){
 
 
-                            if(((Anchor)n).parent.getId().contains(model.startId) && ((Anchor)n).type==model.startType ){
+                            if(((Anchor)n).parent.getId().contains(model.getStartId()) && ((Anchor)n).type==model.getStartType() ){
                                start1 = (Anchor)n;
                                 System.out.println("start");
                                 System.out.println(start1.parent.getId());
 
                             }
-                            if(((Anchor)n).parent.getId().contains(model.endId) && ((Anchor)n).type==model.endType){
+                            if(((Anchor)n).parent.getId().contains(model.getEndId()) && ((Anchor)n).type==model.getEndType()){
                                 end = (Anchor)n;
                                 System.out.println("end");
                                 System.out.println(end.parent.getId());
@@ -409,6 +427,8 @@ public class Controller {
                                     Anchor p = (Anchor) anchor;
                                     if (p.contains(event1.getX(), event1.getY())) {
                                          line = new MyLine(start, p, 1);
+                                        System.out.println(start.getPatentId());
+                                        System.out.println(p.getPatentId());
 
 
                                     }
@@ -462,7 +482,7 @@ public class Controller {
 
     private final ObjectProperty<Point2D> mousePosition = new SimpleObjectProperty<>();
 
-    public void makeDrag(MyGroup super1) {
+    public void makeDrag2(MyGroup super1) {
 
         super1.setOnMousePressed(event -> {
             mousePosition.set(new Point2D(event.getSceneX(), event.getSceneY()));
@@ -573,7 +593,7 @@ public class Controller {
                 newElement.setId("MyGroup"+(getNodeCount()+1));
                 anchorPaneVisual.getChildren().add(newElement);
                 anchorPaneVisual.getChildren().addAll(newElement.top, newElement.bot, newElement.left, newElement.right);
-                makeDrag(newElement);
+                makeDrag2(newElement);
                 newElement.byType(newElement.type);
                 if(radioBtn.isSelected()){
                     newElement.changeVisible();
@@ -623,7 +643,7 @@ public class Controller {
                     // el.right.setVisible(true);
                     el.changeVisible();
                     el.switchByType(super1.type);
-                    anchorPaneVisual.getChildren().addAll(el.right, el.left, el.top, el.bot);
+                   // anchorPaneVisual.getChildren().addAll(el.right, el.left, el.top, el.bot);
 
                     el.makeDrag();
                 }
