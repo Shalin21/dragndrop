@@ -1,57 +1,46 @@
-package sample;
+package sample.Models;
 
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.geometry.Point2D;
-import javafx.scene.Group;
-import javafx.scene.Parent;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextInputDialog;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import sample.Models.Anchor;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Created by admin on 17.10.17.
  */
 public class MyGroup extends Rectangle implements Serializable{
-    Label text = new Label();
+    public  Label text = new Label();
     //Rectangle rectangle = new Rectangle();
-    double size;
-    Anchor top = new Anchor();
-    Anchor bot = new Anchor();
-    Anchor left = new Anchor();
-    Anchor right = new Anchor();
-    Line line1 = new Line();
-    Line line2 = new Line();
-    Line line3 = new Line();
-    Line line4 = new Line();
-    int type;
-    double x,y;
+    public double size;
+    public  Anchor top = new Anchor();
+    public  Anchor bot = new Anchor();
+    public  Anchor left = new Anchor();
+    public  Anchor right = new Anchor();
+    public  Line line1 = new Line();
+    public  Line line2 = new Line();
+    public Line line3 = new Line();
+    public Line line4 = new Line();
+    public  int type;
+    public  double x,y;
 
-    public MyGroup( double x, double y, double size, int type) {
+    public MyGroup( double x, double y, double size, int type, String text) {
         this.type=type;
-        this.text.setText("text");
+        this.text.setText(text);
         super.setLayoutX(x);
         super.setLayoutY(y);
         super.setHeight(size);
         super.setWidth(size*2);
-        size=size;
-        top = new Anchor(x+size, y, 4, 1);
-       bot = new Anchor(x+size, y+size, 4, 3);
-        left = new Anchor(x, y+size/2, 4,4);
-        right = new Anchor(x+size*2, y+size/2, 4, 2);
+        this.size=size;
+        top = new Anchor(x+size, y, 6, 1);
+       bot = new Anchor(x+size, y+size, 6, 3);
+        left = new Anchor(x, y+size/2, 6,4);
+        right = new Anchor(x+size*2, y+size/2, 6, 2);
         this.x=x;
         this.y=y;
         top.setParent(this);
@@ -65,8 +54,8 @@ public class MyGroup extends Rectangle implements Serializable{
         right.setVisible(false);
 
         super.setStroke(Color.BLACK);
-        text.setLayoutX(x+((size*0.9) + (text.getText().length()*3)));
-        text.setLayoutY(y+size/2.9);
+        this.text.setLayoutX(x+((size*0.4) - (this.text.getText().length()*3)));
+        this.text.setLayoutY(y+size/4);
 
         line1.startXProperty().bind(super.layoutXProperty().add(5));
         line1.startYProperty().bind(super.layoutYProperty());

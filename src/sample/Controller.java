@@ -2,46 +2,41 @@ package sample;
 
 import javafx.beans.property.*;
 import javafx.fxml.FXML;
-import javafx.geometry.VPos;
-import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextInputDialog;
-import javafx.scene.control.ToggleGroup;
-import javafx.scene.effect.BlurType;
-import javafx.scene.effect.InnerShadow;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
-
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.*;
 
 import java.io.*;
 import java.util.*;
 
-import javafx.application.Application;
 import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
-import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
-import javafx.scene.text.Font;
-import javafx.scene.text.FontSmoothingType;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
-import javafx.scene.transform.Affine;
-import javafx.scene.transform.Transform;
+import javafx.scene.shape.CubicCurve;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import sample.Models.*;
+import sample.SerializeModels.MyCircleCollection;
+import sample.SerializeModels.MyCircleModel;
+import sample.SerializeModels.MyLineCollection;
+import sample.SerializeModels.MyLineModel;
+
+import javax.xml.bind.*;
+import javax.xml.namespace.QName;
+import javax.xml.transform.stream.StreamSource;
 
 
 public class Controller {
 
+    @FXML
+    private MenuItem menuSave;
 
+    @FXML
+    private MenuItem menuLoad;
     @FXML
     private Circle circle;
 
@@ -71,11 +66,231 @@ public class Controller {
 
     double x, y, x1, y1;
     Anchor start = null;
+
     int clickCount = 0;
     MyCircle ts = new MyCircle(500, 500, 20, 1);
-
+    MyLine line = null;
     public void initialize() {
 
+        menuSave.setOnAction(event -> {
+            MyCircleCollection collection = new MyCircleCollection();
+            MyLineCollection collection1 = new MyLineCollection();
+            for (Node c: anchorPaneVisual.getChildren()) {
+                if(c instanceof MyCircle){
+                    MyCircle ts = (MyCircle)c;
+                    MyCircleModel l = new MyCircleModel(ts.centerXProperty().get(), ts.centerYProperty().get(), ts.size, ts.type, "","Circle", ts.getId());
+                    collection.add(l);
+                    //oos.writeObject(l);
+                    //oos.flush();
+                }
+                else if(c instanceof MyGroup){
+                    MyGroup ts = (MyGroup) c;
+                    MyCircleModel l = new MyCircleModel(ts.layoutXProperty().get(), ts.layoutYProperty().get(), ts.size, ts.type, ts.text.getText(), "Group", ts.getId());
+                    collection.add(l);
+                }
+                else if (c instanceof MyEvent){
+                    MyEvent ts = (MyEvent) c;
+                    MyCircleModel l = new MyCircleModel(ts.layoutXProperty().get(), ts.layoutYProperty().get(), ts.size, ts.type, ts.text, "Event", ts.getId());
+                    collection.add(l);
+                }
+                else if(c instanceof MyLine){
+                    MyLine ts = (MyLine)c;
+                    MyLineModel l = new MyLineModel(ts.startId, ts.endId, ts.startType, ts.endType);
+                    collection1.add(l);
+                }
+            }
+            try {
+                Stage stage = (Stage) anchorPaneVisual.getScene().getWindow();
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Open Resource File");
+
+                JAXBContext jc = JAXBContext.newInstance(MyCircleCollection.class);
+                File serializedFile = fileChooser.showOpenDialog(stage);
+                if (serializedFile.exists() == false)
+                    serializedFile.createNewFile();
+
+
+                Marshaller m = jc.createMarshaller();
+                m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+
+
+
+                JAXBElement<MyCircleCollection> jaxbElement = new JAXBElement<>(
+                        new QName("List"), MyCircleCollection.class, collection);
+
+
+                m.marshal(jaxbElement, serializedFile);
+
+                FileChooser fileChooser1 = new FileChooser();
+                fileChooser1.setTitle("Open Resource File");
+
+                JAXBContext jc1 = JAXBContext.newInstance(MyLineCollection.class);
+                File serializedFile1 = fileChooser1.showOpenDialog(stage);
+                if (serializedFile1.exists() == false)
+                    serializedFile1.createNewFile();
+
+                // PrintWriter xmlOut = new PrintWriter(serializedFile);
+
+                Marshaller m1 = jc1.createMarshaller();
+                m1.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+
+
+                //Wrapper1<MyLineModel> wrapper1 = new Wrapper1(collection1);
+                JAXBElement<MyLineCollection> jaxbElement1 = new JAXBElement<>(
+                        new QName("List"), MyLineCollection.class, collection1);
+
+
+                m1.marshal(jaxbElement1, serializedFile1);
+
+
+                //xmlOut.flush();
+                //xmlOut.close();
+            }
+            catch (JAXBException e){
+                System.out.println(e.getMessage());
+                System.out.println(e.getErrorCode());
+                System.out.println(e.toString());
+            }
+            catch (IOException e){
+                System.out.println(e.getMessage());
+            }
+//            try {
+//                FileOutputStream fos = new FileOutputStream("/Users/admin/Desktop/temp.out ");
+//                ObjectOutputStream oos = new ObjectOutputStream(fos);
+//                for (Node c: anchorPaneVisual.getChildren()) {
+//                    if(c instanceof MyCircle){
+//                        MyCircle ts = (MyCircle)c;
+//                        MyCircleModel l = new MyCircleModel(ts.x, ts.y, ts.size, ts.type);
+//                        oos.writeObject(l);
+//                        oos.flush();
+//                    }
+//                }
+//
+//               // MyCircleModel l = new MyCircleModel(ts.x, ts.y, ts.size, ts.type);
+//                // oos.writeObject(oos);
+//
+//
+//
+//                oos.close();
+//            }
+//            catch (IOException e){}
+        });
+        menuLoad.setOnAction(event -> {
+            MyCircleCollection collection = new MyCircleCollection();
+            MyLineCollection collection1 = new MyLineCollection();
+            Anchor end =new Anchor();
+            Anchor start1 = new Anchor();
+            try{
+
+                Stage stage = (Stage) anchorPaneVisual.getScene().getWindow();
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Open Resource File");
+                JAXBContext jc = JAXBContext.newInstance(MyCircleCollection.class);
+                File serializedFile = fileChooser.showOpenDialog(stage);
+                //UNMARSHALLING
+                Unmarshaller unmarshaller = jc.createUnmarshaller();
+
+                StreamSource xml = new StreamSource(serializedFile);
+                 collection= (MyCircleCollection) unmarshaller.unmarshal(xml, MyCircleCollection.class).getValue();
+
+                FileChooser fileChooser1 = new FileChooser();
+                fileChooser1.setTitle("Open Resource File");
+                JAXBContext jc1 = JAXBContext.newInstance(MyLineCollection.class);
+                File serializedFile1 = fileChooser1.showOpenDialog(stage);
+                //UNMARSHALLING
+                Unmarshaller unmarshaller1 = jc1.createUnmarshaller();
+
+                StreamSource xml1 = new StreamSource(serializedFile1);
+                collection1= (MyLineCollection) unmarshaller1.unmarshal(xml1, MyLineCollection.class).getValue();
+
+                MyCircle c = null;
+                for (MyCircleModel model:collection.getCollection()
+                     ) {
+                    if(model.figure.contains("Circle")) {
+                        //System.out.println("circle");
+                        c = new MyCircle(model.x, model.y, model.size, model.type);
+
+                        anchorPaneVisual.getChildren().addAll(c, c.text, c.right, c.left, c.top, c.bot);
+                        c.setId(model.getId());
+                        setDraggable1(c);
+                    }
+                    else if(model.figure.contains("Group")){
+                        MyGroup group = new MyGroup(model.x, model.y, model.size, model.type, model.text);
+                        group.setId(model.getId());
+                        anchorPaneVisual.getChildren().addAll(group, group.right, group.left, group.top, group.bot);
+                        group.byType(model.type);
+                        makeDrag(group);
+                    }
+                    else if(model.figure.contains("Event")){
+                        MyEvent group1 = new MyEvent(model.x, model.y, model.size, model.type, model.text);
+                        group1.setId(model.getId());
+                        anchorPaneVisual.getChildren().add(group1);
+                        group1.switchByType(group1.type);
+                        makeDrag(group1);
+                    }
+
+                }
+                System.out.println(collection1.getCollection().size());
+
+                for ( MyLineModel model:collection1.getCollection()) {
+
+                    for (Node n:anchorPaneVisual.getChildren()) {
+                        if(n instanceof Anchor){
+
+
+                            if(((Anchor)n).parent.getId().contains(model.startId) && ((Anchor)n).type==model.startType ){
+                               start1 = (Anchor)n;
+                                System.out.println("start");
+                                System.out.println(start1.parent.getId());
+
+                            }
+                            if(((Anchor)n).parent.getId().contains(model.endId) && ((Anchor)n).type==model.endType){
+                                end = (Anchor)n;
+                                System.out.println("end");
+                                System.out.println(end.parent.getId());
+                            }
+
+
+
+                            //line.switchByType(start1, end, 1);
+
+                        }
+
+                    }
+
+
+                }
+                MyLine line = new MyLine(start1, end, 1);
+                anchorPaneVisual.getChildren().add(line);
+                //tableView.setItems(collectionError.getCollection());
+            }
+            catch (JAXBException e){
+                System.out.println(e.toString());
+            }
+//            try {
+//                FileChooser fileChooser = new FileChooser();
+//
+//                FileInputStream fis = new FileInputStream(fileChooser.showOpenDialog(anchorPaneVisual.getScene().getWindow()));
+//                ObjectInputStream oin = new ObjectInputStream(fis);
+//
+//                while (oin.readObject()!=null){
+//                    MyCircleModel mc = (MyCircleModel) oin.readObject();
+//                    MyCircle a = new MyCircle(mc.x, mc.y, mc.size, mc.type);
+//                    System.out.println(mc.x);
+//                    anchorPaneVisual.getChildren().add(a);
+//                    anchorPaneVisual.getChildren().add(a.text);
+//                }
+//
+//            }catch (IOException e){
+//                System.out.println(e.getMessage());
+//            }
+//            catch (ClassNotFoundException e){
+//                System.out.println(e.getMessage());
+//            }
+
+        });
 
         rbLine.setSelected(true);
         rbLine.setToggleGroup(toggleGroup);
@@ -102,7 +317,7 @@ public class Controller {
         int pos = 90;
         for (int i = 1; i <= 4; i++) {
             pos = pos + 50;
-            MyGroup el1 = new MyGroup(circle.getLayoutX() - circle.getRadius(), circle.getLayoutY() + pos, 30, i);
+            MyGroup el1 = new MyGroup(circle.getLayoutX() - circle.getRadius(), circle.getLayoutY() + pos, 30, i, "text");
             el1.text.setVisible(false);
             elementPane.getChildren().add(el1);
             el1.byType(i);
@@ -111,10 +326,10 @@ public class Controller {
         pos = 280;
         for (int i = 1; i <= 3; i++) {
             pos = pos + 50;
-            MyEvent el1 = new MyEvent(circle.getLayoutX() - circle.getRadius(), circle.getLayoutY() + pos, 30, i);
+            MyEvent el1 = new MyEvent(circle.getLayoutX() - circle.getRadius()+10, circle.getLayoutY() + pos, 30, i,"");
 
             elementPane.getChildren().add(el1);
-            el1.switchByType(circle.getLayoutX() - circle.getRadius() + 20, circle.getLayoutY() + pos, 30, i);
+            el1.switchByType( i);
             makeDrag(el1);
 
         }
@@ -123,24 +338,6 @@ public class Controller {
         setElementDrag(and);
         setElementDrag(or);
 
-        anchorPaneVisual.setOnMouseClicked(event -> {
-
-
-            if (event.getClickCount() == 2) {
-
-                Random random = new Random();
-                int answer = random.nextInt(4) + 1;
-//                MyGroup group = new MyGroup( event.getX(), event.getY(), 100, answer);
-//                anchorPaneVisual.getChildren().add(group);
-//                group.makeDrag();
-//                group.byType(group.type);
-                MyEvent myEvent = new MyEvent(400, 400, 100, 1);
-
-                anchorPaneVisual.getChildren().addAll(myEvent);
-                myEvent.switchByType(400, 400, 100, 3);
-                //makeDrag(myEvent);
-            }
-        });
 
         radioBtn.setOnAction(event -> {
             for (Node c : anchorPaneVisual.getChildren()) {
@@ -149,426 +346,86 @@ public class Controller {
                     ((MyCircle) c).changeVisible();
                 } else if (c instanceof MyGroup) {
                     ((MyGroup) c).changeVisible();
+
+                }
+                else if(c instanceof MyEvent){
+                    ((MyEvent) c).changeVisible();
+
                 }
                 for (Node temp1 : anchorPaneVisual.getChildren()) {
                     if (temp1 instanceof Anchor) {
                         Anchor temp = (Anchor) temp1;
 
-                        temp.setOnMouseClicked(event1 -> {
-                            clickCount++;
-                            if (clickCount == 2) {
-                                clickCount = 0;
+//                        temp.setOnMouseClicked(event1 -> {
+//                            clickCount++;
+//                            if (clickCount == 2) {
+//                                clickCount = 0;
+//
+//                                if (start.parent != temp.parent) {
+//
+////
+//                                    int lineType =1;
+//                                    if(rbLine.isSelected()){lineType=1;}
+//                                    else if(rbLine2.isSelected()){lineType=2;}
+//                                    else if(rbLine3.isSelected()){lineType=3;}
+//                                    MyLine line = new MyLine(start, temp, lineType);
+//                                    anchorPaneVisual.getChildren().add(line);
+//
+//                                }
+//                            } else if (clickCount == 1) {
+//                                start = (Anchor) event1.getSource();
+//                            }
+//                        });
+                        CubicCurve cubicCurve = new CubicCurve();
 
-                                if (start.parent != temp.parent) {
+                        temp.setOnMousePressed(event1 -> {
+                            start=temp;
+                            cubicCurve.startXProperty().bind(temp.centerXProperty());
+                            cubicCurve.startYProperty().bind(temp.centerYProperty());
+                            cubicCurve.controlX1Property().bind(temp.centerXProperty());
+                            cubicCurve.controlY1Property().bind(temp.centerYProperty());
+                            cubicCurve.controlX2Property().bind(temp.centerXProperty());
+                            cubicCurve.controlY2Property().bind(temp.centerYProperty());
+                            cubicCurve.setEndX(event1.getX());
+                            cubicCurve.setEndY(event1.getY());
+                            cubicCurve.setStroke(Color.BLACK);
+                            cubicCurve.setStrokeWidth(1);
+                            cubicCurve.setFill(null);
+                            anchorPaneVisual.getChildren().add(cubicCurve);
 
-                                    if (start instanceof Anchor && temp instanceof Anchor) {
-                                        if (start.type == 2 && temp.type == 4) {
-                                            CubicCurve cubicCurve = new CubicCurve();
-                                            cubicCurve.startXProperty().bind(start.centerXProperty());
-                                            cubicCurve.startYProperty().bind(start.centerYProperty());
+                        });
 
-                                            Polygon trinagle = new Polygon();
-                                            trinagle.layoutYProperty().unbind();
-                                            trinagle.layoutXProperty().unbind();
-                                            trinagle.getPoints().add(5.0);
-                                            trinagle.getPoints().add(5.0);
-                                            trinagle.getPoints().add(5.0);
-                                            trinagle.getPoints().add(15.0);
-                                            trinagle.getPoints().add(20.0);
-                                            trinagle.getPoints().add(10.0);
-                                            DoubleProperty xp = new SimpleDoubleProperty();
-                                            DoubleProperty yp = new SimpleDoubleProperty();
-                                            xp.bind(cubicCurve.endXProperty().subtract(20));
-                                            yp.bind(cubicCurve.endYProperty().subtract(10));
-                                            trinagle.layoutXProperty().bind(xp);
-                                            trinagle.layoutYProperty().bind(yp);
-
-                                            double value = 0;
-                                            if (temp.getCenterX() > start.getCenterX()) {
-                                                value = temp.getCenterX() - start.getCenterX();
-                                            } else {
-                                                value = start.getCenterX() - temp.getCenterX();
-                                            }
-                                            cubicCurve.controlX1Property().bind(start.centerXProperty().add(value));
-                                            cubicCurve.controlY1Property().bind(start.centerYProperty());
-                                            cubicCurve.controlX2Property().bind(start.centerXProperty());
-                                            cubicCurve.controlY2Property().bind(temp.centerYProperty());
-
-                                            cubicCurve.endXProperty().bind(temp.centerXProperty());
-                                            cubicCurve.endYProperty().bind(temp.centerYProperty());
-                                            cubicCurve.setStroke(Color.BLACK);
-                                            if (rbLine2.isSelected() == true) {
-                                                cubicCurve.setStyle("-fx-stroke-dash-array: 2;");
-                                            }
-                                            cubicCurve.setStrokeWidth(1);
-                                            cubicCurve.setFill(null);
-
-                                            if (rbLine3.isSelected() == false) {
-                                                anchorPaneVisual.getChildren().add(trinagle);
-                                                trinagle.toBack();
-                                            }
-
-                                            anchorPaneVisual.getChildren().add(cubicCurve);
-                                        } else if (start.type == 2 && temp.type == 2) {
-                                            CubicCurve cubicCurve = new CubicCurve();
-                                            Polygon trinagle = new Polygon();
-                                            trinagle.layoutYProperty().unbind();
-                                            trinagle.layoutXProperty().unbind();
-
-                                            trinagle.getPoints().add(5.0);
-                                            trinagle.getPoints().add(5.0);
-                                            trinagle.getPoints().add(5.0);
-                                            trinagle.getPoints().add(15.0);
-                                            trinagle.getPoints().add(-15.0);
-                                            trinagle.getPoints().add(10.0);
-                                            DoubleProperty xp = new SimpleDoubleProperty();
-                                            DoubleProperty yp = new SimpleDoubleProperty();
-                                            xp.bind(cubicCurve.endXProperty().add(10));
-                                            yp.bind(cubicCurve.endYProperty().subtract(10));
-                                            trinagle.layoutXProperty().bind(xp);
-                                            trinagle.layoutYProperty().bind(yp);
+                        temp.setOnMouseDragged(event1 -> {
 
 
-                                            cubicCurve.startXProperty().bind(start.centerXProperty());
-                                            cubicCurve.startYProperty().bind(start.centerYProperty());
-                                            double value = 0;
-                                            if (temp.getCenterX() > start.getCenterX()) {
-                                                value = temp.getCenterX() - start.getCenterX();
-                                            } else {
-                                                value = start.getCenterX() - temp.getCenterX();
-                                            }
-                                            cubicCurve.controlX1Property().bind(start.centerXProperty().add(value));
-                                            cubicCurve.controlY1Property().bind(start.centerYProperty());
-                                            cubicCurve.controlX2Property().bind(temp.centerXProperty().add(value));
-                                            cubicCurve.controlY2Property().bind(temp.centerYProperty());
+                            cubicCurve.setEndX(event1.getX());
+                            cubicCurve.setEndY(event1.getY());
 
-                                            cubicCurve.endXProperty().bind(temp.centerXProperty());
-                                            cubicCurve.endYProperty().bind(temp.centerYProperty());
-                                            cubicCurve.setStroke(Color.BLACK);
-                                            if (rbLine2.isSelected() == true) {
-                                                cubicCurve.setStyle("-fx-stroke-dash-array: 2;");
-                                            }
-                                            cubicCurve.setStrokeWidth(1);
-                                            cubicCurve.setFill(null);
+                        });
 
-                                            if (rbLine3.isSelected() == false) {
-                                                anchorPaneVisual.getChildren().add(trinagle);
-                                                trinagle.toBack();
-                                            }
-                                            anchorPaneVisual.getChildren().add(cubicCurve);
-                                        } else if (start.type == 2 && temp.type == 1) {
-                                            Polygon trinagle = new Polygon();
-                                            trinagle.getPoints().add(5.0);
-                                            trinagle.getPoints().add(5.0);
-                                            trinagle.getPoints().add(15.0);
-                                            trinagle.getPoints().add(5.0);
-                                            trinagle.getPoints().add(10.0);
-                                            trinagle.getPoints().add(20.0);
-                                            trinagle.setLayoutX(500);
-                                            trinagle.setLayoutY(500);
-                                            trinagle.layoutYProperty().unbind();
-                                            trinagle.layoutXProperty().unbind();
-                                            if (rbLine3.isSelected() == false) {
-                                                anchorPaneVisual.getChildren().add(trinagle);
-                                                trinagle.toBack();
-                                            }
-
-                                            CubicCurve cubicCurve = new CubicCurve();
-
-                                            cubicCurve.startXProperty().bind(start.centerXProperty());
-                                            cubicCurve.startYProperty().bind(start.centerYProperty());
-
-                                            cubicCurve.controlX1Property().bind(start.centerXProperty().add(temp.centerXProperty().subtract(start.centerXProperty())));
-                                            cubicCurve.controlY1Property().bind(start.centerYProperty());
-
-                                            cubicCurve.controlX2Property().bind(start.centerXProperty().add(temp.centerXProperty().subtract(start.centerXProperty())));
-                                            cubicCurve.controlY2Property().bind(start.centerYProperty());
-
-                                            cubicCurve.endXProperty().bind(temp.centerXProperty());
-                                            cubicCurve.endYProperty().bind(temp.centerYProperty());
-                                            cubicCurve.setStroke(Color.BLACK);
-                                            if (rbLine2.isSelected() == true) {
-                                                cubicCurve.setStyle("-fx-stroke-dash-array: 2;");
-                                            }
-                                            cubicCurve.setStrokeWidth(1);
-                                            cubicCurve.setFill(null);
-
-                                            DoubleProperty xp = new SimpleDoubleProperty();
-                                            DoubleProperty yp = new SimpleDoubleProperty();
-                                            xp.unbind();
-                                            yp.unbind();
-                                            xp.bind(cubicCurve.endXProperty().subtract(10));
-                                            yp.bind(cubicCurve.endYProperty().subtract(20));
-
-                                            trinagle.layoutXProperty().bind(xp);
-                                            trinagle.layoutYProperty().bind(yp);
-
-                                            anchorPaneVisual.getChildren().add(cubicCurve);
-
-                                        } else if (start.type == 3 && (temp.type == 4 || temp.type == 2)) {
-                                            Polygon trinagle = new Polygon();
-                                            trinagle.layoutYProperty().unbind();
-                                            trinagle.layoutXProperty().unbind();
-                                            CubicCurve cubicCurve = new CubicCurve();
-                                            if (temp.type == 4) {
-
-                                                trinagle.getPoints().add(5.0);
-                                                trinagle.getPoints().add(5.0);
-                                                trinagle.getPoints().add(5.0);
-                                                trinagle.getPoints().add(15.0);
-                                                trinagle.getPoints().add(20.0);
-                                                trinagle.getPoints().add(10.0);
-                                                DoubleProperty xp = new SimpleDoubleProperty();
-                                                DoubleProperty yp = new SimpleDoubleProperty();
-                                                xp.bind(cubicCurve.endXProperty().subtract(20));
-                                                yp.bind(cubicCurve.endYProperty().subtract(10));
-                                                trinagle.layoutXProperty().bind(xp);
-                                                trinagle.layoutYProperty().bind(yp);
-
-                                            } else {
-                                                trinagle.getPoints().add(5.0);
-                                                trinagle.getPoints().add(5.0);
-                                                trinagle.getPoints().add(5.0);
-                                                trinagle.getPoints().add(15.0);
-                                                trinagle.getPoints().add(-10.0);
-                                                trinagle.getPoints().add(10.0);
-                                                DoubleProperty xp = new SimpleDoubleProperty();
-                                                DoubleProperty yp = new SimpleDoubleProperty();
-                                                xp.bind(cubicCurve.endXProperty().add(10));
-                                                yp.bind(cubicCurve.endYProperty().subtract(10));
-                                                trinagle.layoutXProperty().bind(xp);
-                                                trinagle.layoutYProperty().bind(yp);
-                                            }
+                        temp.setOnMouseReleased(event1 -> {
+                            for (Node anchor:anchorPaneVisual.getChildren()) {
+                                if(anchor instanceof Anchor){
+                                    Anchor p = (Anchor) anchor;
+                                    if (p.contains(event1.getX(), event1.getY())) {
+                                         line = new MyLine(start, p, 1);
 
 
-                                            cubicCurve.startXProperty().bind(start.centerXProperty());
-                                            cubicCurve.startYProperty().bind(start.centerYProperty());
-                                            double value = 0;
-                                            if (temp.getCenterX() > start.getCenterX()) {
-                                                value = temp.getCenterX() - start.getCenterX();
-                                            } else {
-                                                value = start.getCenterX() - temp.getCenterX();
-                                            }
-                                            cubicCurve.controlX1Property().bind(start.centerXProperty());
-                                            cubicCurve.controlY1Property().bind(temp.centerYProperty());
-
-                                            cubicCurve.controlX2Property().bind(start.centerXProperty());
-                                            cubicCurve.controlY2Property().bind(temp.centerYProperty());
-
-                                            cubicCurve.endXProperty().bind(temp.centerXProperty());
-                                            cubicCurve.endYProperty().bind(temp.centerYProperty());
-                                            cubicCurve.setStroke(Color.BLACK);
-                                            if (rbLine2.isSelected() == true) {
-                                                cubicCurve.setStyle("-fx-stroke-dash-array: 2;");
-                                            }
-                                            cubicCurve.setStrokeWidth(1);
-                                            cubicCurve.setFill(null);
-
-
-                                            anchorPaneVisual.getChildren().add(cubicCurve);
-                                            cubicCurve.toBack();
-                                            if (rbLine3.isSelected() == false) {
-                                                anchorPaneVisual.getChildren().add(trinagle);
-                                                trinagle.toBack();
-                                            }
-                                        } else if (start.type == 3 && temp.type == 1) {
-                                            Polygon trinagle = new Polygon();
-                                            trinagle.getPoints().add(5.0);
-                                            trinagle.getPoints().add(5.0);
-                                            trinagle.getPoints().add(15.0);
-                                            trinagle.getPoints().add(5.0);
-                                            trinagle.getPoints().add(10.0);
-                                            trinagle.getPoints().add(20.0);
-                                            trinagle.setLayoutX(500);
-                                            trinagle.setLayoutY(500);
-                                            trinagle.layoutYProperty().unbind();
-                                            trinagle.layoutXProperty().unbind();
-                                            if (rbLine3.isSelected() == false) {
-                                                anchorPaneVisual.getChildren().add(trinagle);
-                                                trinagle.toBack();
-                                            }
-                                            CubicCurve cubicCurve = new CubicCurve();
-                                            cubicCurve.startXProperty().bind(start.centerXProperty());
-                                            cubicCurve.startYProperty().bind(start.centerYProperty());
-                                            double value = 0;
-                                            if (temp.getCenterX() > start.getCenterX()) {
-                                                value = temp.getCenterX() - start.getCenterX();
-                                            } else {
-                                                value = start.getCenterX() - temp.getCenterX();
-                                            }
-                                            cubicCurve.controlX1Property().bind(start.centerXProperty());
-                                            cubicCurve.controlY1Property().bind(start.centerYProperty().add(value));
-
-                                            cubicCurve.controlX2Property().bind(temp.centerXProperty());
-                                            cubicCurve.controlY2Property().bind(temp.centerYProperty().subtract(value));
-
-                                            cubicCurve.endXProperty().bind(temp.centerXProperty());
-                                            cubicCurve.endYProperty().bind(temp.centerYProperty());
-                                            cubicCurve.setStroke(Color.BLACK);
-                                            if (rbLine2.isSelected() == true) {
-                                                cubicCurve.setStyle("-fx-stroke-dash-array: 2;");
-                                            }
-                                            cubicCurve.setStrokeWidth(1);
-                                            cubicCurve.setFill(null);
-                                            DoubleProperty xp = new SimpleDoubleProperty();
-                                            DoubleProperty yp = new SimpleDoubleProperty();
-                                            xp.unbind();
-                                            yp.unbind();
-                                            xp.bind(cubicCurve.endXProperty().subtract(10));
-                                            yp.bind(cubicCurve.endYProperty().subtract(20));
-
-                                            trinagle.layoutXProperty().bind(xp);
-                                            trinagle.layoutYProperty().bind(yp);
-
-                                            anchorPaneVisual.getChildren().add(cubicCurve);
-
-                                        } else if (start.type == 4 && temp.type == 4) {
-                                            CubicCurve cubicCurve = new CubicCurve();
-                                            Polygon trinagle = new Polygon();
-                                            trinagle.layoutYProperty().unbind();
-                                            trinagle.layoutXProperty().unbind();
-                                            trinagle.getPoints().add(5.0);
-                                            trinagle.getPoints().add(5.0);
-                                            trinagle.getPoints().add(5.0);
-                                            trinagle.getPoints().add(15.0);
-                                            trinagle.getPoints().add(20.0);
-                                            trinagle.getPoints().add(10.0);
-                                            DoubleProperty xp = new SimpleDoubleProperty();
-                                            DoubleProperty yp = new SimpleDoubleProperty();
-                                            xp.bind(cubicCurve.endXProperty().subtract(20));
-                                            yp.bind(cubicCurve.endYProperty().subtract(10));
-                                            trinagle.layoutXProperty().bind(xp);
-                                            trinagle.layoutYProperty().bind(yp);
-
-                                            cubicCurve.startXProperty().bind(start.centerXProperty());
-                                            cubicCurve.startYProperty().bind(start.centerYProperty());
-                                            double value = 0;
-                                            if (temp.getCenterX() > start.getCenterX()) {
-                                                value = temp.getCenterX() - start.getCenterX();
-                                            } else {
-                                                value = start.getCenterX() - temp.getCenterX();
-                                            }
-                                            cubicCurve.controlX1Property().bind(start.centerXProperty().subtract(value));
-                                            cubicCurve.controlY1Property().bind(start.centerYProperty());
-                                            cubicCurve.controlX2Property().bind(temp.centerXProperty().subtract(value));
-                                            cubicCurve.controlY2Property().bind(temp.centerYProperty());
-
-                                            cubicCurve.endXProperty().bind(temp.centerXProperty());
-                                            cubicCurve.endYProperty().bind(temp.centerYProperty());
-                                            cubicCurve.setStroke(Color.BLACK);
-                                            if (rbLine2.isSelected() == true) {
-                                                cubicCurve.setStyle("-fx-stroke-dash-array: 2;");
-                                            }
-                                            cubicCurve.setStrokeWidth(1);
-                                            cubicCurve.setFill(null);
-
-                                            if (rbLine3.isSelected() == false) {
-                                                anchorPaneVisual.getChildren().add(trinagle);
-                                                trinagle.toBack();
-                                            }
-                                            anchorPaneVisual.getChildren().add(cubicCurve);
-                                        } else if (start.type == 4 && temp.type == 2) {
-                                            CubicCurve cubicCurve = new CubicCurve();
-                                            cubicCurve.startXProperty().bind(start.centerXProperty());
-                                            cubicCurve.startYProperty().bind(start.centerYProperty());
-
-                                            Polygon trinagle = new Polygon();
-                                            trinagle.layoutYProperty().unbind();
-                                            trinagle.layoutXProperty().unbind();
-                                            trinagle.getPoints().add(5.0);
-                                            trinagle.getPoints().add(5.0);
-                                            trinagle.getPoints().add(5.0);
-                                            trinagle.getPoints().add(15.0);
-                                            trinagle.getPoints().add(-15.0);
-                                            trinagle.getPoints().add(10.0);
-                                            DoubleProperty xp = new SimpleDoubleProperty();
-                                            DoubleProperty yp = new SimpleDoubleProperty();
-                                            xp.bind(cubicCurve.endXProperty().add(10));
-                                            yp.bind(cubicCurve.endYProperty().subtract(10));
-                                            trinagle.layoutXProperty().bind(xp);
-                                            trinagle.layoutYProperty().bind(yp);
-                                            double value = 0;
-                                            if (temp.getCenterX() > start.getCenterX()) {
-                                                value = temp.getCenterX() - start.getCenterX();
-                                            } else {
-                                                value = start.getCenterX() - temp.getCenterX();
-                                            }
-                                            cubicCurve.controlX1Property().bind(start.centerXProperty().subtract(value));
-                                            cubicCurve.controlY1Property().bind(start.centerYProperty());
-                                            cubicCurve.controlX2Property().bind(start.centerXProperty());
-                                            cubicCurve.controlY2Property().bind(temp.centerYProperty());
-
-                                            cubicCurve.endXProperty().bind(temp.centerXProperty());
-                                            cubicCurve.endYProperty().bind(temp.centerYProperty());
-                                            cubicCurve.setStroke(Color.BLACK);
-                                            if (rbLine2.isSelected() == true) {
-                                                cubicCurve.setStyle("-fx-stroke-dash-array: 1;");
-                                            }
-                                            cubicCurve.setStrokeWidth(1);
-                                            cubicCurve.setFill(null);
-
-                                            if (rbLine3.isSelected() == false) {
-                                                anchorPaneVisual.getChildren().add(trinagle);
-                                                trinagle.toBack();
-                                            }
-
-                                            anchorPaneVisual.getChildren().add(cubicCurve);
-                                        } else if (start.type == 4 && temp.type == 1) {
-                                            Polygon trinagle = new Polygon();
-                                            trinagle.getPoints().add(5.0);
-                                            trinagle.getPoints().add(5.0);
-                                            trinagle.getPoints().add(15.0);
-                                            trinagle.getPoints().add(5.0);
-                                            trinagle.getPoints().add(10.0);
-                                            trinagle.getPoints().add(20.0);
-                                            trinagle.setLayoutX(500);
-                                            trinagle.setLayoutY(500);
-                                            trinagle.layoutYProperty().unbind();
-                                            trinagle.layoutXProperty().unbind();
-
-                                            if (rbLine3.isSelected() == false) {
-                                                anchorPaneVisual.getChildren().add(trinagle);
-                                                trinagle.toBack();
-                                            }
-
-                                            CubicCurve cubicCurve = new CubicCurve();
-
-                                            cubicCurve.startXProperty().bind(start.centerXProperty());
-                                            cubicCurve.startYProperty().bind(start.centerYProperty());
-
-                                            cubicCurve.controlX1Property().bind(start.centerXProperty().add(temp.centerXProperty().subtract(start.centerXProperty())));
-                                            cubicCurve.controlY1Property().bind(start.centerYProperty());
-
-                                            cubicCurve.controlX2Property().bind(start.centerXProperty().subtract(temp.centerXProperty().subtract(start.centerXProperty())));
-                                            cubicCurve.controlY2Property().bind(start.centerYProperty());
-
-                                            cubicCurve.endXProperty().bind(temp.centerXProperty());
-                                            cubicCurve.endYProperty().bind(temp.centerYProperty());
-                                            cubicCurve.setStroke(Color.BLACK);
-                                            if (rbLine2.isSelected() == true) {
-                                                cubicCurve.setStyle("-fx-stroke-dash-array: 2;");
-                                            }
-                                            cubicCurve.setStrokeWidth(1);
-                                            cubicCurve.setFill(null);
-
-                                            DoubleProperty xp = new SimpleDoubleProperty();
-                                            DoubleProperty yp = new SimpleDoubleProperty();
-                                            xp.unbind();
-                                            yp.unbind();
-                                            xp.bind(cubicCurve.endXProperty().subtract(10));
-                                            yp.bind(cubicCurve.endYProperty().subtract(20));
-
-                                            trinagle.layoutXProperty().bind(xp);
-                                            trinagle.layoutYProperty().bind(yp);
-
-                                            anchorPaneVisual.getChildren().add(cubicCurve);
-                                        }
                                     }
                                 }
-                            } else if (clickCount == 1) {
-                                start = (Anchor) event1.getSource();
+
                             }
+                            if(line!=null) {
+                                anchorPaneVisual.getChildren().add(line);
+                                line.toBack();
+                                anchorPaneVisual.getChildren().remove(cubicCurve);
+                            }
+                            else{
+                                anchorPaneVisual.getChildren().remove(cubicCurve);
+                            }
+
                         });
+
                     }
                 }
             }
@@ -619,8 +476,8 @@ public class Controller {
                 super1.setLayoutX(super1.getLayoutX() + deltaX);
                 super1.setLayoutY(super1.getLayoutY() + deltaY);
                 mousePosition.set(new Point2D(event.getSceneX(), event.getSceneY()));
-                super1.text.setLayoutX(super1.getLayoutX() + ((super1.size * 0.9) + (super1.text.getText().length() * 3)));
-                super1.text.setLayoutY(super1.getLayoutY() + super1.size / 2.9);
+                super1.text.setLayoutX(super1.getLayoutX() + ((super1.size * 0.4) - (super1.text.getText().length() * 3)));
+                super1.text.setLayoutY(super1.getLayoutY() + super1.size / 4);
             }
         });
         super1.text.setOnMouseClicked(event -> {
@@ -660,8 +517,8 @@ public class Controller {
             if (element.getCenterX() > 100) {
                 Random a = new Random();
                 MyCircle circle1 = new MyCircle(event.getX() - circle.getRadius() * 2.7, event.getY() + circle.getRadius() * 2.3, 20, element.type);
+                circle1.setId("MyCircle"+(getNodeCount()+1));
 
-                circle1.setId("asd" + (getNodeCount() + 1));
 
                 setDraggable1(circle1);
                 anchorPaneVisual.getChildren().add(circle1);
@@ -677,6 +534,9 @@ public class Controller {
                 circle1.left.toFront();
                 circle1.right.toFront();
                 circle1.bot.toFront();
+                if(radioBtn.isSelected()){
+                    circle1.changeVisible();
+                }
 
             }
 
@@ -709,12 +569,15 @@ public class Controller {
         element.setOnMouseReleased(event -> {
 
             if (element.getLayoutX() > 100) {
-                MyGroup newElement = new MyGroup(event.getX(), event.getY(), 80, element.type);
-
+                MyGroup newElement = new MyGroup(event.getX(), event.getY(), 80, element.type, "text");
+                newElement.setId("MyGroup"+(getNodeCount()+1));
                 anchorPaneVisual.getChildren().add(newElement);
                 anchorPaneVisual.getChildren().addAll(newElement.top, newElement.bot, newElement.left, newElement.right);
                 makeDrag(newElement);
                 newElement.byType(newElement.type);
+                if(radioBtn.isSelected()){
+                    newElement.changeVisible();
+                }
             }
             element.setLayoutX(x);
             element.setLayoutY(y);
@@ -733,11 +596,11 @@ public class Controller {
     }
     double x2,y2;
     private void makeDrag(MyEvent super1) {
-        if(super1.type !=3) {
+        if (super1.type != 3) {
             super1.setOnMousePressed(event -> {
                 x2 = super1.getLayoutX();
                 y2 = super1.getLayoutY();
-                System.out.println(x2 + " " + y2);
+                // System.out.println(x2 + " " + y2);
                 mousePosition.set(new Point2D(event.getSceneX(), event.getSceneY()));
             });
 
@@ -753,9 +616,15 @@ public class Controller {
             });
             super1.setOnMouseReleased(event -> {
                 if (super1.getLayoutX() > 100) {
-                    MyEvent el = new MyEvent(event.getX(), event.getY(), 40, super1.type);
+                    MyEvent el = new MyEvent(100, 100, 80, super1.type, "text");
                     anchorPaneVisual.getChildren().add(el);
-                    el.switchByType(event.getX(), event.getY(), 40, super1.type);
+                    el.setId("MyEvent"+(getNodeCount()+1));
+
+                    // el.right.setVisible(true);
+                    el.changeVisible();
+                    el.switchByType(super1.type);
+                    anchorPaneVisual.getChildren().addAll(el.right, el.left, el.top, el.bot);
+
                     el.makeDrag();
                 }
                 super1.setLayoutX(x2);
@@ -765,16 +634,24 @@ public class Controller {
                 super1.process.setLayoutY(495);
             });
         }
+
+
         super1.process.setOnMouseReleased(event -> {
-            if(super1.getLayoutX()>100){
-                MyEvent el = new MyEvent(event.getX(), event.getY(), 40, super1.type);
+            if (super1.getLayoutX() > 100) {
+                MyEvent el = new MyEvent(event.getX(), event.getY(), 80, super1.type, "text");
                 anchorPaneVisual.getChildren().add(el);
-                el.switchByType(event.getX(), event.getY(), 40, super1.type);
+                el.setId("MyEvent"+(getNodeCount()+1));
+                el.switchByType(super1.type);
                 el.makeDrag();
+                //el.right.setVisible(true);
+                anchorPaneVisual.getChildren().addAll(el.right);
+                if (radioBtn.isSelected()) {
+                    el.changeVisible();
+                }
             }
             super1.setLayoutX(x2);
             super1.setLayoutY(y2);
-            super1.process.setLayoutX(x2+10);
+            super1.process.setLayoutX(x2 - super1.size * 0.3);
             super1.process.setLayoutY(492);
         });
         super1.process.setOnMousePressed(event -> {
@@ -789,9 +666,14 @@ public class Controller {
             super1.process.setLayoutY(super1.process.getLayoutY() + deltaY);
             mousePosition.set(new Point2D(event.getSceneX(), event.getSceneY()));
 
-            super1.setLayoutX(super1.process.getLayoutX() - super1.process.getWidth() * 0.15);
+            super1.setLayoutX(super1.process.getLayoutX() + super1.process.getWidth() * 0.24);
             super1.setLayoutY(super1.process.getLayoutY() - super1.process.getHeight() * 16.4);
         });
     }
+
+
+
+
+
 }
 

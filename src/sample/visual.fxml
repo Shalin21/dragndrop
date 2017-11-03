@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
-<?import javafx.scene.shape.Rectangle?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <children>
@@ -14,13 +16,23 @@
          <children>
             <AnchorPane fx:id="elementPane" minHeight="-Infinity" minWidth="-Infinity" prefWidth="150.0" VBox.vgrow="ALWAYS">
                <children>
-                  <Rectangle fx:id="square" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="44.0" layoutX="9.0" layoutY="806.0" stroke="BLACK" strokeType="INSIDE" width="44.0" />
                   <Circle fx:id="circle" fill="DODGERBLUE" layoutX="31.0" layoutY="68.0" radius="22.0" stroke="BLACK" strokeType="INSIDE" />
-                  <Label fx:id="label" layoutX="14.0" layoutY="860.0" text="Label" />
-                  <RadioButton fx:id="radioBtn" layoutX="20.0" layoutY="14.0" mnemonicParsing="false" text="RadioButton" />
-                  <RadioButton fx:id="rbLine" layoutX="14.0" layoutY="695.0" mnemonicParsing="false" text="RadioButton" />
-                  <RadioButton fx:id="rbLine3" layoutX="14.0" layoutY="762.0" mnemonicParsing="false" text="RadioButton" />
-                  <RadioButton fx:id="rbLine2" layoutX="14.0" layoutY="726.0" mnemonicParsing="false" text="RadioButton" />
+                  <Label fx:id="label" layoutX="14.0" layoutY="631.0" text="Label" />
+                  <RadioButton fx:id="radioBtn" layoutX="9.0" layoutY="749.0" mnemonicParsing="false" text="RadioButton" />
+                  <RadioButton fx:id="rbLine" layoutX="9.0" layoutY="801.0" mnemonicParsing="false" text="Information flow" />
+                  <RadioButton fx:id="rbLine3" layoutX="9.0" layoutY="868.0" mnemonicParsing="false" text="Organisation flow" />
+                  <RadioButton fx:id="rbLine2" layoutX="9.0" layoutY="832.0" mnemonicParsing="false" text="Control flow" />
+                  <Label layoutX="10.0" layoutY="774.0" text="Line Types" />
+                  <MenuBar prefHeight="29.0" prefWidth="1600.0">
+                    <menus>
+                      <Menu mnemonicParsing="false" text="File">
+                        <items>
+                          <MenuItem fx:id="menuSave" mnemonicParsing="false" text="Save" />
+                              <MenuItem fx:id="menuLoad" mnemonicParsing="false" text="Load" />
+                        </items>
+                      </Menu>
+                    </menus>
+                  </MenuBar>
                </children>
             </AnchorPane>
          </children>
