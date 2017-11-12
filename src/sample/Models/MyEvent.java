@@ -46,21 +46,11 @@ public class MyEvent extends Polygon {
             text1.setLayoutX(super.getLayoutX() + size*0.4);
             text1.setLayoutY(super.getLayoutY() + size*0.3);
         }
-//        right = new Anchor(x+size*1.5, y+size/2, 4, 2);
-//        left = new Anchor(x-size/2, y+size/2, 4, 2);
-//        top = new Anchor(x+size/2, y, 4, 2);
-//        bot = new Anchor(x+size/2, y+size, 4, 2);
-
-//        right = new Anchor(x+size*2, y+size/2, 4, 2);
-//        left = new Anchor(x-size/2, y+size/2, 4, 2);
-//        top = new Anchor(x+size, y, 4, 2);
-//        bot = new Anchor(x+size, y+size, 4, 2);
-       // makeDrag();
         this.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2){
                 Pane pane = (Pane)this.getParent();
                 if(this.type==1) {
-                    pane.getChildren().removeAll(this, this.text1);
+                    pane.getChildren().removeAll(this, this.text1, this.right);
                 }
                 else if(this.type==2){pane.getChildren().removeAll(this, this.text1, this.right, this.left, this.top, this.bot);}
                 else if(this.type==3){pane.getChildren().removeAll(this,  this.text1, this.right, this.left, this.top, this.bot, this.process);}
@@ -83,7 +73,12 @@ public class MyEvent extends Polygon {
             typeThree();
         }
     }
-
+/**
+ * В зависимости от типа элемента, задаються дополнительные параметры(цвет фона, дополнительные элементы) и рисуется сам обьект
+ */
+    /**
+     * Первый тип элемента
+     */
     private void typeThree() {
         super.getPoints().addAll(new Double[]{
                 x, y,
@@ -112,11 +107,10 @@ public class MyEvent extends Polygon {
         right.setVisible(false);
 
 
-
-        //this.x=super.getLayoutX();
-        //this.y=y;
     }
-
+    /**
+     * Второй тип элемента
+     */
     private void typeTwo() {
         super.getPoints().addAll(new Double[]{
                 x, y,
@@ -156,7 +150,9 @@ public class MyEvent extends Polygon {
         parent.getChildren().addAll(text1, top, bot, left, right);
 
     }
-
+    /**
+     * Третий тип элемента
+     */
     private void typeOne() {
         super.getPoints().addAll(new Double[]{
                 x, y,
@@ -168,24 +164,26 @@ public class MyEvent extends Polygon {
         super.setFill(new Color(0.52, 0.67, 0.98, 1.0));
         super.setStroke(Color.BLACK);
         super.setStrokeWidth(1);
-       // super.setLayoutX(x);
-       // this.x=super.getLayoutX();
-       // this.y=y;
+
 
         right = new Anchor(x+size*2, y+size/2, 6, 2);
         right.setParent(this);
         right.setVisible(false);
         right.centerXProperty().bind(super.layoutXProperty().add(size*3.3-3));
         right.centerYProperty().bind(super.layoutYProperty().add(size+60));
-       // text1.layoutXProperty().bind(super.layoutXProperty());
-       // text1.layoutYProperty().bind(super.layoutYProperty());
+
         Pane parent = (Pane) super.getParent();
         parent.getChildren().addAll(text1);
     }
 
-
+    /**
+     * Собитие для создание Drag'n'Drop
+     */
     private final ObjectProperty<Point2D> mousePosition = new SimpleObjectProperty<>();
     public void makeDrag(){
+        /**
+         * Событие для редактирования текста внутри обьекта
+         */
         text1.setOnMouseClicked(event -> {
             TextInputDialog dialog = new TextInputDialog();
             dialog.setTitle("Split");
@@ -248,7 +246,9 @@ public class MyEvent extends Polygon {
             text1.setLayoutY(super.getLayoutY() + size*0.3);
         });
     }
-
+    /**
+     * Собитие для включения и выключения соеденительных точек
+     */
     public void changeVisible(){
 
         bot.setVisible(!bot.isVisible());

@@ -21,8 +21,6 @@ public  static HostServices hostServices;
 
         }
 
-
-
     public static void main(String[] args) {
         launch(args);
     }

@@ -17,12 +17,25 @@ public class MyLine extends CubicCurve {
     public String endId = new String();
     public int startType;
     public int endType;
+    public int lineType;
 
+    public int getLineType() {
+        return lineType;
+    }
+
+    public void setLineType(int lineType) {
+        this.lineType = lineType;
+    }
+
+    public Polygon trinagle = new Polygon();
     public MyLine(Anchor start, Anchor temp, int rb) {
         this.setOnMouseClicked(event -> {
             if(event.getClickCount()==2 )
             {Pane pane = (Pane)this.getParent();
                 pane.getChildren().remove(event.getSource());
+                if(lineType==3){
+                    pane.getChildren().remove(((MyLine)event.getSource()).trinagle);
+                }
             }
         });
         startId = start.getPatentId();
@@ -30,6 +43,7 @@ public class MyLine extends CubicCurve {
         startType = start.type;
         endType = temp.type;
         endType = temp.type;
+        lineType=rb;
   Pane anchorPaneVisual = (Pane)super.getParent();
         if (start.type == 2 && temp.type == 4) {
             System.out.println("asd");
@@ -40,7 +54,7 @@ public class MyLine extends CubicCurve {
             super1.startXProperty().bind(start.centerXProperty());
             super1.startYProperty().bind(start.centerYProperty());
 
-            Polygon trinagle = new Polygon();
+            //Polygon trinagle = new Polygon();
             trinagle.layoutYProperty().unbind();
             trinagle.layoutXProperty().unbind();
             trinagle.getPoints().add(5.0);
@@ -76,16 +90,7 @@ public class MyLine extends CubicCurve {
             super1.setStrokeWidth(1.5);
             super1.setFill(null);
 
-            if (rb == 3) {
-
-                anchorPaneVisual.getChildren().add(trinagle);
-                trinagle.toBack();
-            }
-
-            //anchorPaneVisual.getChildren().add(super1);
         } else if (start.type == 2 && temp.type == 2) {
-            //super super = new super();
-            Polygon trinagle = new Polygon();
             trinagle.layoutYProperty().unbind();
             trinagle.layoutXProperty().unbind();
 
@@ -124,15 +129,8 @@ public class MyLine extends CubicCurve {
             }
             super.setStrokeWidth(1.5);
             super.setFill(null);
-
-            if (rb == 3) {
-
-                anchorPaneVisual.getChildren().add(trinagle);
-                trinagle.toBack();
-            }
-            //anchorPaneVisual.getChildren().add(super);
         } else if (start.type == 2 && temp.type == 1) {
-            Polygon trinagle = new Polygon();
+
             trinagle.getPoints().add(5.0);
             trinagle.getPoints().add(5.0);
             trinagle.getPoints().add(15.0);
@@ -143,12 +141,6 @@ public class MyLine extends CubicCurve {
             trinagle.setLayoutY(500);
             trinagle.layoutYProperty().unbind();
             trinagle.layoutXProperty().unbind();
-            if (rb == 3) {
-               // anchorPaneVisual.getChildren().add(trinagle);
-                trinagle.toBack();
-            }
-
-            // super super = new super();
 
             super.startXProperty().bind(start.centerXProperty());
             super.startYProperty().bind(start.centerYProperty());
@@ -178,13 +170,13 @@ public class MyLine extends CubicCurve {
             trinagle.layoutXProperty().bind(xp);
             trinagle.layoutYProperty().bind(yp);
 
-            // anchorPaneVisual.getChildren().add(super);
+
 
         } else if (start.type == 3 && (temp.type == 4 || temp.type == 2)) {
-            Polygon trinagle = new Polygon();
+
             trinagle.layoutYProperty().unbind();
             trinagle.layoutXProperty().unbind();
-            // super super = new super();
+
             if (temp.type == 4) {
 
                 trinagle.getPoints().add(5.0);
@@ -240,14 +232,11 @@ public class MyLine extends CubicCurve {
             super.setFill(null);
 
 
-            // anchorPaneVisual.getChildren().add(super);
+
             super.toBack();
-            if (rb == 3) {
-                anchorPaneVisual.getChildren().add(trinagle);
-                trinagle.toBack();
-            }
+
         } else if (start.type == 3 && temp.type == 1) {
-            Polygon trinagle = new Polygon();
+
             trinagle.getPoints().add(5.0);
             trinagle.getPoints().add(5.0);
             trinagle.getPoints().add(15.0);
@@ -258,11 +247,7 @@ public class MyLine extends CubicCurve {
             trinagle.setLayoutY(500);
             trinagle.layoutYProperty().unbind();
             trinagle.layoutXProperty().unbind();
-            if (rb == 3) {
-                anchorPaneVisual.getChildren().add(trinagle);
-                trinagle.toBack();
-            }
-            // super super = new super();
+
             super.startXProperty().bind(start.centerXProperty());
             super.startYProperty().bind(start.centerYProperty());
             double value = 0;
@@ -295,11 +280,10 @@ public class MyLine extends CubicCurve {
             trinagle.layoutXProperty().bind(xp);
             trinagle.layoutYProperty().bind(yp);
 
-            // anchorPaneVisual.getChildren().add(super);
+
 
         } else if (start.type == 4 && temp.type == 4) {
-            //super super = new super();
-            Polygon trinagle = new Polygon();
+
             trinagle.layoutYProperty().unbind();
             trinagle.layoutXProperty().unbind();
             trinagle.getPoints().add(5.0);
@@ -337,17 +321,13 @@ public class MyLine extends CubicCurve {
             super.setStrokeWidth(1.5);
             super.setFill(null);
 
-            if (rb == 3) {
-                anchorPaneVisual.getChildren().add(trinagle);
-                trinagle.toBack();
-            }
-            // anchorPaneVisual.getChildren().add(super);
+
         } else if (start.type == 4 && temp.type == 2) {
-            // super super = new super();
+
             super.startXProperty().bind(start.centerXProperty());
             super.startYProperty().bind(start.centerYProperty());
 
-            Polygon trinagle = new Polygon();
+
             trinagle.layoutYProperty().unbind();
             trinagle.layoutXProperty().unbind();
             trinagle.getPoints().add(5.0);
@@ -382,14 +362,8 @@ public class MyLine extends CubicCurve {
             super.setStrokeWidth(1.5);
             super.setFill(null);
 
-            if (rb == 3) {
-                anchorPaneVisual.getChildren().add(trinagle);
-                trinagle.toBack();
-            }
-
-            //anchorPaneVisual.getChildren().add(super);
         } else if (start.type == 4 && temp.type == 1) {
-            Polygon trinagle = new Polygon();
+
             trinagle.getPoints().add(5.0);
             trinagle.getPoints().add(5.0);
             trinagle.getPoints().add(15.0);
@@ -401,12 +375,6 @@ public class MyLine extends CubicCurve {
             trinagle.layoutYProperty().unbind();
             trinagle.layoutXProperty().unbind();
 
-            if (rb == 3) {
-                anchorPaneVisual.getChildren().add(trinagle);
-                trinagle.toBack();
-            }
-
-            // super super = new super();
 
             super.startXProperty().bind(start.centerXProperty());
             super.startYProperty().bind(start.centerYProperty());
@@ -414,7 +382,7 @@ public class MyLine extends CubicCurve {
             super.controlX1Property().bind(start.centerXProperty().add(temp.centerXProperty().subtract(start.centerXProperty())));
             super.controlY1Property().bind(start.centerYProperty());
 
-            super.controlX2Property().bind(start.centerXProperty().subtract(temp.centerXProperty().subtract(start.centerXProperty())));
+            super.controlX2Property().bind(start.centerXProperty().add(temp.centerXProperty().subtract(start.centerXProperty())));
             super.controlY2Property().bind(start.centerYProperty());
 
             super.endXProperty().bind(temp.centerXProperty());
@@ -436,7 +404,6 @@ public class MyLine extends CubicCurve {
             trinagle.layoutXProperty().bind(xp);
             trinagle.layoutYProperty().bind(yp);
 
-            // anchorPaneVisual.getChildren().add(super);
         }
     }
 
@@ -445,7 +412,7 @@ public class MyLine extends CubicCurve {
         Pane anchorPaneVisual = (Pane)super.getParent();
         if (start.type == 2 && temp.type == 4) {
             System.out.println("asd");
-            Polygon trinagle = new Polygon();
+
             trinagle.layoutYProperty().unbind();
             trinagle.layoutXProperty().unbind();
             trinagle.getPoints().add(5.0);
@@ -481,16 +448,8 @@ public class MyLine extends CubicCurve {
             super.setStrokeWidth(1.5);
             super.setFill(null);
 
-            if (rb == 3) {
-
-                anchorPaneVisual.getChildren().add(trinagle);
-                trinagle.toBack();
-            }
-
-            //anchorPaneVisual.getChildren().add(super1);
         } else if (start.type == 2 && temp.type == 2) {
-            //super super = new super();
-            Polygon trinagle = new Polygon();
+
             trinagle.layoutYProperty().unbind();
             trinagle.layoutXProperty().unbind();
 
@@ -530,14 +489,8 @@ public class MyLine extends CubicCurve {
             super.setStrokeWidth(1.5);
             super.setFill(null);
 
-            if (rb == 3) {
-
-                anchorPaneVisual.getChildren().add(trinagle);
-                trinagle.toBack();
-            }
-            //anchorPaneVisual.getChildren().add(super);
         } else if (start.type == 2 && temp.type == 1) {
-            Polygon trinagle = new Polygon();
+            //Polygon trinagle = new Polygon();
             trinagle.getPoints().add(5.0);
             trinagle.getPoints().add(5.0);
             trinagle.getPoints().add(15.0);
@@ -548,12 +501,6 @@ public class MyLine extends CubicCurve {
             trinagle.setLayoutY(500);
             trinagle.layoutYProperty().unbind();
             trinagle.layoutXProperty().unbind();
-            if (rb == 3) {
-                anchorPaneVisual.getChildren().add(trinagle);
-                trinagle.toBack();
-            }
-
-           // super super = new super();
 
             super.startXProperty().bind(start.centerXProperty());
             super.startYProperty().bind(start.centerYProperty());
@@ -583,13 +530,13 @@ public class MyLine extends CubicCurve {
             trinagle.layoutXProperty().bind(xp);
             trinagle.layoutYProperty().bind(yp);
 
-           // anchorPaneVisual.getChildren().add(super);
+
 
         } else if (start.type == 3 && (temp.type == 4 || temp.type == 2)) {
-            Polygon trinagle = new Polygon();
+
             trinagle.layoutYProperty().unbind();
             trinagle.layoutXProperty().unbind();
-           // super super = new super();
+
             if (temp.type == 4) {
 
                 trinagle.getPoints().add(5.0);
@@ -645,14 +592,11 @@ public class MyLine extends CubicCurve {
             super.setFill(null);
 
 
-           // anchorPaneVisual.getChildren().add(super);
+
             super.toBack();
-            if (rb == 3) {
-                anchorPaneVisual.getChildren().add(trinagle);
-                trinagle.toBack();
-            }
+
         } else if (start.type == 3 && temp.type == 1) {
-            Polygon trinagle = new Polygon();
+
             trinagle.getPoints().add(5.0);
             trinagle.getPoints().add(5.0);
             trinagle.getPoints().add(15.0);
@@ -663,11 +607,7 @@ public class MyLine extends CubicCurve {
             trinagle.setLayoutY(500);
             trinagle.layoutYProperty().unbind();
             trinagle.layoutXProperty().unbind();
-            if (rb == 3) {
-                anchorPaneVisual.getChildren().add(trinagle);
-                trinagle.toBack();
-            }
-           // super super = new super();
+
             super.startXProperty().bind(start.centerXProperty());
             super.startYProperty().bind(start.centerYProperty());
             double value = 0;
@@ -700,11 +640,10 @@ public class MyLine extends CubicCurve {
             trinagle.layoutXProperty().bind(xp);
             trinagle.layoutYProperty().bind(yp);
 
-           // anchorPaneVisual.getChildren().add(super);
+
 
         } else if (start.type == 4 && temp.type == 4) {
-            //super super = new super();
-            Polygon trinagle = new Polygon();
+
             trinagle.layoutYProperty().unbind();
             trinagle.layoutXProperty().unbind();
             trinagle.getPoints().add(5.0);
@@ -742,17 +681,12 @@ public class MyLine extends CubicCurve {
             super.setStrokeWidth(1.5);
             super.setFill(null);
 
-            if (rb == 3) {
-                anchorPaneVisual.getChildren().add(trinagle);
-                trinagle.toBack();
-            }
-           // anchorPaneVisual.getChildren().add(super);
         } else if (start.type == 4 && temp.type == 2) {
-           // super super = new super();
+
             super.startXProperty().bind(start.centerXProperty());
             super.startYProperty().bind(start.centerYProperty());
 
-            Polygon trinagle = new Polygon();
+
             trinagle.layoutYProperty().unbind();
             trinagle.layoutXProperty().unbind();
             trinagle.getPoints().add(5.0);
@@ -787,14 +721,8 @@ public class MyLine extends CubicCurve {
             super.setStrokeWidth(1.5);
             super.setFill(null);
 
-            if (rb == 3) {
-                anchorPaneVisual.getChildren().add(trinagle);
-                trinagle.toBack();
-            }
-
-            //anchorPaneVisual.getChildren().add(super);
         } else if (start.type == 4 && temp.type == 1) {
-            Polygon trinagle = new Polygon();
+
             trinagle.getPoints().add(5.0);
             trinagle.getPoints().add(5.0);
             trinagle.getPoints().add(15.0);
@@ -806,12 +734,6 @@ public class MyLine extends CubicCurve {
             trinagle.layoutYProperty().unbind();
             trinagle.layoutXProperty().unbind();
 
-            if (rb == 3) {
-                anchorPaneVisual.getChildren().add(trinagle);
-                trinagle.toBack();
-            }
-
-           // super super = new super();
 
             super.startXProperty().bind(start.centerXProperty());
             super.startYProperty().bind(start.centerYProperty());
@@ -826,7 +748,7 @@ public class MyLine extends CubicCurve {
             super.endYProperty().bind(temp.centerYProperty());
             super.setStroke(Color.BLACK);
             if (rb == 2) {
-                super.setStyle("-fx-stroke-dash-array: 2;");
+                super.setStyle("-fx-stroke-dash-array: 1;");
             }
             super.setStrokeWidth(1.5);
             super.setFill(null);
@@ -841,11 +763,17 @@ public class MyLine extends CubicCurve {
             trinagle.layoutXProperty().bind(xp);
             trinagle.layoutYProperty().bind(yp);
 
-           // anchorPaneVisual.getChildren().add(super);
+
         }
 
     }
-
+    public void drawTriangle(){
+        if(lineType==3){
+            Pane anchorPaneVisual = (Pane)super.getParent();
+            anchorPaneVisual.getChildren().add(trinagle);
+            trinagle.toBack();
+        }
+    }
     public String getStartId() {
         return startId;
     }

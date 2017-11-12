@@ -6,6 +6,7 @@ import javafx.scene.shape.Circle;
 
 /**
  * Created by admin on 19.10.17.
+ * Класс соеденительных точек
  */
 public class Anchor extends Circle {
     public int type;

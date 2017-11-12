@@ -5,7 +5,9 @@ import java.io.Serializable;
 
 /**
  * Created by admin on 26.10.17.
+ * МОДЕЛЬ ДЛЯ СЕРИАЛИЗАЦИИ ЭЛЕМЕНТОВ ДИАГРАММЫ
  */
+
 public class MyCircleModel implements Serializable {
 
     private double x,y,size;

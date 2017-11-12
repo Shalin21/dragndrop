@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class MyGroup extends Rectangle implements Serializable{
     public  Label text = new Label();
-    //Rectangle rectangle = new Rectangle();
+
     public double size;
     public  Anchor top = new Anchor();
     public  Anchor bot = new Anchor();
@@ -88,12 +88,14 @@ public class MyGroup extends Rectangle implements Serializable{
         right.centerXProperty().bind(super.layoutXProperty().add(size*2));
         right.centerYProperty().bind(super.layoutYProperty().add(size/2));
 
-
+        /**
+         * Событие для удаления обьекта и его дополнительных параметров с формы
+         */
         this.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2){
                 Pane pane = (Pane)this.getParent();
                 if(this.type==4) {
-                    pane.getChildren().removeAll(this, this.text);
+                    pane.getChildren().removeAll(this, this.text, this.right, this.left, this.top, this.bot);
                 }
                 else if(this.type==3){pane.getChildren().removeAll(this, this.text, this.right, this.left, this.top, this.bot);}
                 else if(this.type==2){pane.getChildren().removeAll(this, this.line1, this.text, this.right, this.left, this.top, this.bot);}
@@ -101,6 +103,9 @@ public class MyGroup extends Rectangle implements Serializable{
             }
         });
     }
+    /**
+     * Функция для инициализации обьекта нужного типа
+     */
     public void byType(int type){
 
         switch (type){
@@ -123,6 +128,9 @@ public class MyGroup extends Rectangle implements Serializable{
             }
         }
     }
+    /**
+     * Четвертый тип элемента
+     */
     private void typeFour() {
 
         super.setFill(Color.ORANGE);
@@ -131,7 +139,9 @@ public class MyGroup extends Rectangle implements Serializable{
         Pane parent = (Pane) super.getParent();
         parent.getChildren().addAll(this.text);
     }
-
+    /**
+     * Третий тип элемента
+     */
     private void typeThree() {
 
         super.setFill(Color.YELLOW);
@@ -140,7 +150,9 @@ public class MyGroup extends Rectangle implements Serializable{
        // super.getChildren().removeAll();
         //super.getChildren().addAll( super, this.text);
     }
-
+    /**
+     * Второй тип элемента
+     */
     private void typeTwo(double size) {
         //Line line = new Line();
 
@@ -151,17 +163,20 @@ public class MyGroup extends Rectangle implements Serializable{
        // super.getChildren().removeAll();
         //super.getChildren().addAll( super, this.text,  line);
     }
-
+    /**
+     * Первый тип элемента
+     */
     private void typeOne(double size) {
         super.setFill(Color.LIGHTBLUE);
         Pane parent = (Pane) super.getParent();
         parent.getChildren().addAll(this.text,line1,line2,line3,line4);
-       // super.getChildren().removeAll();
-        //super.getChildren().addAll( super, this.text,  line1, line2, line3, line4);
+
     }
 
 
-
+    /**
+     * Список всех соеденительных точек обьекта
+     */
     public List<Anchor> getConnectionPoints(){
         List<Anchor> list = new ArrayList<>();
         list.add(top);
@@ -170,7 +185,9 @@ public class MyGroup extends Rectangle implements Serializable{
         list.add(right);
         return list;
     }
-
+    /**
+     * Собитие для включения и выключения соеденительных точек
+     */
     public void changeVisible(){
 
         bot.setVisible(!bot.isVisible());

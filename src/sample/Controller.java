@@ -74,6 +74,10 @@ public class Controller {
     public void initialize() {
     label.setVisible(false);
     radioBtn.setText("Enable draw");
+
+        /**
+         * Собитие сериализации обьектов
+         */
         menuSave.setOnAction(event -> {
             MyCircleCollection collection = new MyCircleCollection();
             MyLineCollection collection1 = new MyLineCollection();
@@ -82,8 +86,6 @@ public class Controller {
                     MyCircle ts = (MyCircle)c;
                     MyCircleModel l = new MyCircleModel(ts.centerXProperty().get(), ts.centerYProperty().get(), ts.size, ts.type, "","Circle", ts.getId());
                     collection.add(l);
-                    //oos.writeObject(l);
-                    //oos.flush();
                 }
                 else if(c instanceof MyGroup){
                     MyGroup ts = (MyGroup) c;
@@ -97,7 +99,7 @@ public class Controller {
                 }
                 else if(c instanceof MyLine){
                     MyLine ts = (MyLine)c;
-                    MyLineModel l = new MyLineModel(ts.getStartId(), ts.getEndId(), ts.getStartType(), ts.getEndType());
+                    MyLineModel l = new MyLineModel(ts.getStartId(), ts.getEndId(), ts.getStartType(), ts.getEndType(), ts.getLineType());
                     collection1.add(l);
                 }
             }
@@ -140,14 +142,10 @@ public class Controller {
                 if (serializedFile1.exists() == false)
                     serializedFile1.createNewFile();
 
-                // PrintWriter xmlOut = new PrintWriter(serializedFile);
-
                 Marshaller m1 = jc1.createMarshaller();
                 m1.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
 
-
-                //Wrapper1<MyLineModel> wrapper1 = new Wrapper1(collection1);
                 JAXBElement<MyLineCollection> jaxbElement1 = new JAXBElement<>(
                         new QName("List"), MyLineCollection.class, collection1);
 
@@ -155,8 +153,7 @@ public class Controller {
                 m1.marshal(jaxbElement1, serializedFile1);
 
 
-                //xmlOut.flush();
-                //xmlOut.close();
+
             }
             catch (JAXBException e){
                 System.out.println(e.getMessage());
@@ -166,27 +163,12 @@ public class Controller {
             catch (IOException e){
                 System.out.println(e.getMessage());
             }
-//            try {
-//                FileOutputStream fos = new FileOutputStream("/Users/admin/Desktop/temp.out ");
-//                ObjectOutputStream oos = new ObjectOutputStream(fos);
-//                for (Node c: anchorPaneVisual.getChildren()) {
-//                    if(c instanceof MyCircle){
-//                        MyCircle ts = (MyCircle)c;
-//                        MyCircleModel l = new MyCircleModel(ts.x, ts.y, ts.size, ts.type);
-//                        oos.writeObject(l);
-//                        oos.flush();
-//                    }
-//                }
 //
-//               // MyCircleModel l = new MyCircleModel(ts.x, ts.y, ts.size, ts.type);
-//                // oos.writeObject(oos);
-//
-//
-//
-//                oos.close();
-//            }
-//            catch (IOException e){}
         });
+
+        /**
+         * Собитие десериализации обьектов
+         */
         menuLoad.setOnAction(event -> {
             MyCircleCollection collection = new MyCircleCollection();
             MyLineCollection collection1 = new MyLineCollection();
@@ -217,7 +199,7 @@ public class Controller {
                 fileChooser1.setTitle("Open Resource File");
                 JAXBContext jc1 = JAXBContext.newInstance(MyLineCollection.class);
 
-                //UNMARSHALLING
+
                 Unmarshaller unmarshaller1 = jc1.createUnmarshaller();
 
                 StreamSource xml1 = new StreamSource(serializedFile1);
@@ -227,7 +209,6 @@ public class Controller {
                 for (MyCircleModel model:collection.getCollection()
                      ) {
                     if(model.getFigure().contains("Circle")) {
-                        //System.out.println("circle");
                         c = new MyCircle(model.getX(), model.getY(), model.getSize(), model.getType());
 
                         anchorPaneVisual.getChildren().addAll(c, c.text, c.right, c.left, c.top, c.bot);
@@ -237,6 +218,7 @@ public class Controller {
                     else if(model.getFigure().contains("Group")){
                         MyGroup group = new MyGroup(model.getX(), model.getY(), model.getSize(), model.getType(), model.getText());
                         group.setId(model.getId());
+                        group.text.setText(group.getId());
                         anchorPaneVisual.getChildren().addAll(group, group.right, group.left, group.top, group.bot);
                         group.byType(model.getType());
                         makeDrag2(group);
@@ -244,13 +226,13 @@ public class Controller {
                     else if(model.getFigure().contains("Event")){
                         MyEvent group1 = new MyEvent(model.getX(), model.getY(), model.getSize(), model.getType(), model.getText());
                         group1.setId(model.getId());
+                        group1.text1.setText(group1.getId());
                         anchorPaneVisual.getChildren().add(group1);
                         group1.switchByType(group1.type);
                         group1.makeDrag();
                     }
 
                 }
-                System.out.println(collection1.getCollection().size());
 
                 for ( MyLineModel model:collection1.getCollection()) {
 
@@ -258,56 +240,40 @@ public class Controller {
                         if(n instanceof Anchor){
 
 
-                            if(((Anchor)n).parent.getId().contains(model.getStartId()) && ((Anchor)n).type==model.getStartType() ){
+                            if(((Anchor)n).parent.getId().equalsIgnoreCase(model.getStartId()) && ((Anchor)n).type==model.getStartType() ){
                                start1 = (Anchor)n;
-                                System.out.println("start");
-                                System.out.println(start1.parent.getId());
+//                                //System.out.println("start");
+//                                System.out.println("Start type:"+start1.type);
+//                                System.out.println("Start parent:"+start1.parent.getId());
 
                             }
-                            if(((Anchor)n).parent.getId().contains(model.getEndId()) && ((Anchor)n).type==model.getEndType()){
+                            if(((Anchor)n).parent.getId().equalsIgnoreCase(model.getEndId()) && ((Anchor)n).type==model.getEndType()){
                                 end = (Anchor)n;
-                                System.out.println("end");
-                                System.out.println(end.parent.getId());
+//                               // System.out.println("end");
+//                                System.out.println("End type:"+end.type);
+//                                System.out.println("End parent:"+end.parent.getId());
+//                                System.out.println();
                             }
 
-
-
-                            //line.switchByType(start1, end, 1);
 
                         }
 
                     }
-
+                    MyLine line = new MyLine(start1, end, model.getLineType());
+                    anchorPaneVisual.getChildren().add(line);
+                    if(line.getLineType()==3){
+                        anchorPaneVisual.getChildren().add(line.trinagle);
+                        line.trinagle.toBack();
+                    }
+                    line.toBack();
 
                 }
-                MyLine line = new MyLine(start1, end, 1);
-                anchorPaneVisual.getChildren().add(line);
-                //tableView.setItems(collectionError.getCollection());
+
+
             }
             catch (JAXBException e){
                 System.out.println(e.toString());
             }
-//            try {
-//                FileChooser fileChooser = new FileChooser();
-//
-//                FileInputStream fis = new FileInputStream(fileChooser.showOpenDialog(anchorPaneVisual.getScene().getWindow()));
-//                ObjectInputStream oin = new ObjectInputStream(fis);
-//
-//                while (oin.readObject()!=null){
-//                    MyCircleModel mc = (MyCircleModel) oin.readObject();
-//                    MyCircle a = new MyCircle(mc.x, mc.y, mc.size, mc.type);
-//                    System.out.println(mc.x);
-//                    anchorPaneVisual.getChildren().add(a);
-//                    anchorPaneVisual.getChildren().add(a.text);
-//                }
-//
-//            }catch (IOException e){
-//                System.out.println(e.getMessage());
-//            }
-//            catch (ClassNotFoundException e){
-//                System.out.println(e.getMessage());
-//            }
-
         });
 
         rbLine.setSelected(true);
@@ -373,27 +339,6 @@ public class Controller {
                 for (Node temp1 : anchorPaneVisual.getChildren()) {
                     if (temp1 instanceof Anchor) {
                         Anchor temp = (Anchor) temp1;
-
-//                        temp.setOnMouseClicked(event1 -> {
-//                            clickCount++;
-//                            if (clickCount == 2) {
-//                                clickCount = 0;
-//
-//                                if (start.parent != temp.parent) {
-//
-////
-//                                    int lineType =1;
-//                                    if(rbLine.isSelected()){lineType=1;}
-//                                    else if(rbLine2.isSelected()){lineType=2;}
-//                                    else if(rbLine3.isSelected()){lineType=3;}
-//                                    MyLine line = new MyLine(start, temp, lineType);
-//                                    anchorPaneVisual.getChildren().add(line);
-//
-//                                }
-//                            } else if (clickCount == 1) {
-//                                start = (Anchor) event1.getSource();
-//                            }
-//                        });
                         CubicCurve cubicCurve = new CubicCurve();
 
                         temp.setOnMousePressed(event1 -> {
@@ -426,10 +371,11 @@ public class Controller {
                                 if(anchor instanceof Anchor){
                                     Anchor p = (Anchor) anchor;
                                     if (p.contains(event1.getX(), event1.getY())) {
-                                         line = new MyLine(start, p, 1);
-                                        System.out.println(start.getPatentId());
-                                        System.out.println(p.getPatentId());
-
+                                        int lineType =1;
+                                    if(rbLine.isSelected()){lineType=1;}
+                                    else if(rbLine2.isSelected()){lineType=2;}
+                                    else if(rbLine3.isSelected()){lineType=3;}
+                                         line = new MyLine(start, p, lineType);
 
                                     }
                                 }
@@ -437,7 +383,11 @@ public class Controller {
                             }
                             if(line!=null) {
                                 anchorPaneVisual.getChildren().add(line);
+                                if(line.lineType==3){
+                                    anchorPaneVisual.getChildren().add(line.trinagle);
+                                }
                                 line.toBack();
+                                line.trinagle.toBack();
                                 anchorPaneVisual.getChildren().remove(cubicCurve);
                             }
                             else{
@@ -481,7 +431,12 @@ public class Controller {
     }
 
     private final ObjectProperty<Point2D> mousePosition = new SimpleObjectProperty<>();
-
+    /**
+     * Собития для возможности добавления элементов перетаскивая их из левой панели (события для каждого типа элементов)
+     */
+        /**
+         * Собитие для обьектов MyGroup
+         */
     public void makeDrag2(MyGroup super1) {
 
         super1.setOnMousePressed(event -> {
@@ -521,7 +476,9 @@ public class Controller {
 
 
     }
-
+    /**
+     * Собитие для обьектов MyCircle
+     */
     public void setElementDrag(MyCircle element) {
 
         element.setOnMousePressed(event -> {
@@ -567,7 +524,9 @@ public class Controller {
         });
 
     }
-
+    /**
+     * Собитие для обьектов MyGroup
+     */
     public void setElementGDrag(MyGroup element) {
         ObjectProperty<Point2D> mousePosition = new SimpleObjectProperty<>();
 
@@ -604,23 +563,16 @@ public class Controller {
         });
 
     }
+    /**
+     * Собитие для обьектов MyEvent
+     */
 
-
-    public int getNodeCount() {
-        int i = 0;
-        for (Node n : anchorPaneVisual.getChildren()
-                ) {
-            i++;
-        }
-        return i;
-    }
     double x2,y2;
     private void makeDrag(MyEvent super1) {
         if (super1.type != 3) {
             super1.setOnMousePressed(event -> {
                 x2 = super1.getLayoutX();
                 y2 = super1.getLayoutY();
-                // System.out.println(x2 + " " + y2);
                 mousePosition.set(new Point2D(event.getSceneX(), event.getSceneY()));
             });
 
@@ -639,12 +591,13 @@ public class Controller {
                     MyEvent el = new MyEvent(100, 100, 80, super1.type, "text");
                     anchorPaneVisual.getChildren().add(el);
                     el.setId("MyEvent"+(getNodeCount()+1));
-
-                    // el.right.setVisible(true);
-                    el.changeVisible();
                     el.switchByType(super1.type);
-                   // anchorPaneVisual.getChildren().addAll(el.right, el.left, el.top, el.bot);
-
+                    if (radioBtn.isSelected()) {
+                        el.changeVisible();
+                    }
+                    if(super1.type==1) {
+                        anchorPaneVisual.getChildren().addAll(el.right);
+                    }
                     el.makeDrag();
                 }
                 super1.setLayoutX(x2);
@@ -660,14 +613,14 @@ public class Controller {
             if (super1.getLayoutX() > 100) {
                 MyEvent el = new MyEvent(event.getX(), event.getY(), 80, super1.type, "text");
                 anchorPaneVisual.getChildren().add(el);
+                anchorPaneVisual.getChildren().addAll(el.right);
                 el.setId("MyEvent"+(getNodeCount()+1));
                 el.switchByType(super1.type);
-                el.makeDrag();
-                //el.right.setVisible(true);
-                anchorPaneVisual.getChildren().addAll(el.right);
+
                 if (radioBtn.isSelected()) {
                     el.changeVisible();
                 }
+                el.makeDrag();
             }
             super1.setLayoutX(x2);
             super1.setLayoutY(y2);
@@ -691,7 +644,17 @@ public class Controller {
         });
     }
 
-
+    /**
+     * Функция подсчета кол-ва обьектов на панели
+     */
+    public int getNodeCount() {
+        int i = 0;
+        for (Node n : anchorPaneVisual.getChildren()
+                ) {
+            i++;
+        }
+        return i;
+    }
 
 
 
